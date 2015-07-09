@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>EpiCollect.net</title>
+<link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <style type="text/css">
+        #error { text-align: left; color: #ff0000; }
+    </style>
+
+    <script type="text/javascript" src="/static/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-ui-1.7.2.min.js"></script>
+    <script>
+        //on submit button,
+        //send AJAX project-name request
+        $(function() {
+            $("form[name=createProject]").submit( function() {
+                var projectName=$("input[name=projectName]").val();
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "/createProject.asp",
+                    data: {
+                        "projectName" : projectName,
+                    },
+                    dataType: "string",
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $("#error").text("Error: "+errorThrown);
+                    },
+                    success: function (string) {
+                        if (string.indexOf("Error:")>=0)
+                            $("#error").html(string);
+                        else
+                            window.top.location="/project.html?name="+projectName;
+                    },
+                });
+                
+                //don't actually submit the form
+                return false;
+            });
+        });
+    </script>
+	<script type="text/javascript" src="js/feedback.js"></script>
+<script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
+<LINK rel="stylesheet" type="text/css" href="css/extElementsl.css">
+<script type="text/javascript" src="extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="extjs/ext-all.js"></script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7503370-9']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body>
+<div id="container">   
+    <a href=""><img src="images/logo_new.png" alt="EC_logo" /></a>
+     <DIV id="nav">
+           <A href="/">Home</A>
+        <A href="instructions/">Instructions </A>
+		<A href="create1.html">Create Project</A>
+        <A href="instructions/HANDSETS.html">Handsets</A> 
+		 <A href="instructions/FAQ.html">FAQ</A>  
+		 <A href="instructions/developers.html">Developers</A>   
+		 <A href="instructions/ABOUTUS.html">About us</A>  </DIV>
+
+
+    <div id="mainbox">
+        <table border="0" cellpadding="2" cellspacing="0">
+            <tr>            
+            <td id="centercolumn">
+            <h1 style="color:#44536b;"> <strong>Create a project </strong></h1>
+      
+                
+                <br />
+               <p align="justify">                Please enter a name for your
+                 project - this will act as the name used for your website and
+                 also as the name used when entering into your phone to start
+                 collecting data.</p>
+               <p align="justify">Once you have created a project you can then
+                 design a form for data collection. You can also amend the look
+                 and feel of your homepage by adding some explanatory text about
+                 your project and  upload an image. </p>
+               <p align="justify">Please read the instructions prior to proceeding. </p>
+               <p><br />
+              </p>
+              Create a new project named: 
+			  
+			  <div id="error"></div>
+			  <form name="createProject"><input name="projectName"><input name="createProject" type="submit" value="Create"></form>
+</td>
+            <td style="padding:0 0 0 115px;">
+                <strong>GETTING STARTED:				</strong>
+                <ul>
+                  <li><a href="instructions/">Read the Instructions</a></li>
+                  <li><a href="create1.html">Create a project </a></li>
+                  <li><a href="http://www.plosone.org/article/info:doi/10.1371/journal.pone.0006968" target="_blank"><img src="images/pdf.gif" width="16" height="16" alt="brochure" /> Read
+                      our publication</a></li>
+                  <li><a href="javascript:void(0)" onclick="contactForm('NULL','NULL')">Leave
+                      feedback</a></li>
+              </ul>
+                <p>&nbsp;</p>
+            <p><strong>Epicollect is provided free of charge with funding
+              provided by: </strong></p>
+            <p ><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top">&nbsp;</td>
+    <td valign="bottom"><p><img src="images/wtlogo.gif" alt="wt_logo" width="171" height="27" align="bottom" /></p></td>
+  </tr>
+</table>
+            </td>
+            </tr>            
+      </table>
+   
+    </div> 
+    <div id="footer"></div>
+    <div id="foot"> 
+      <div align="center"><a href="http://www.imperial.ac.uk" target="_blank"> Developed
+          at Imperial College London</a> | <a href="mailto:d.aanensen@imperial.ac.uk">Contact
+        us </a></div>
+    </div>
+</div>
+
+</body>
+</html>

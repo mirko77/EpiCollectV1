@@ -1,0 +1,151 @@
+#middle
+{
+	background-image:none;
+}
+
+#middle.iphone
+{
+	background-image: url("http://localhost:8080/images/iphoneepi.jpg");
+	background-repeat: no-repeat;
+	background-position: center 50px;
+}
+
+#middle.android
+{
+	background-image: url("./android_epi.png");
+	background-repeat: no-repeat;
+	background-position: center 50px;
+}
+
+#destination.iphone
+{
+	position:relative;
+	color: #FFFFFF;
+	height: 374px;
+	font-family: Helvetica;
+	font-size: 12pt;
+	overflow:auto;
+	margin: 65px 30px 43px 33px;
+}
+
+#destination.iphone .label {
+	display:inline-block;
+	
+	width: 99%;
+}
+
+#destination.iphone  .control {
+	display:inline-block;
+	font-size: 16px;
+	vertical-align: top;
+	width: 99%;
+}
+
+#destination.iphone .optionLabel {
+	
+}
+
+#destination.iphone input ,#destination.iphone textarea{
+	display:inline-block;
+	background-color: #000000;
+	border: 2px solid #CCCCCC;
+	color: #FFFFFF;
+	font-family:Helvetica;
+	font-size: 12pt;
+	font-weight:normal;
+	float: none;
+	padding: 3px 3px 3px 3px;
+	width: 100%;
+}
+
+#destination.iphone .control input {
+	width: 60%;
+	border:0;
+}
+
+#destination.iphone .formInput {
+	width: 95%;
+	display: inline-block;
+	min-height: 20px;
+}
+
+#destination.iphone .editing
+{
+	background-color: transparent;
+	padding-right:0px;
+	margin-right:0px;
+	
+}
+
+#destination.android .editing
+{
+	background-color: transparent;
+	padding-right:0px;
+	margin-right:0px;
+	
+}
+
+#destination.iphone .control .formInput {
+	width: 100%;
+	display: block;
+}
+
+#destination.iphone .formLine {
+	width:100%;
+}
+
+#destination.android
+{
+	position:relative;
+	color: #FFFFFF;
+	height: 430px;
+	font-family: Helvetica;
+	font-size: 12pt;
+	overflow:auto;
+	margin: 50px 30px 0px 30px;
+}
+
+#destination.android .label {
+	padding: 0 0 0 3px;
+	width: 100%;
+}
+
+#destination.android  .control {
+	background-color: #FFFFFF;
+	color: #000000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	width:99%;
+	padding: 0px 0px 0px 3px;
+}
+
+#destination.android .optionLabel {
+	
+}
+
+#destination.android input, #destination.android textarea {
+	border: 1px solid #CCCCCC;
+	font-family: Helvetica;
+	font-size: 12pt;
+	-moz-border-radius: 5px;
+	-webkit-border-radius:	5px;
+	padding: 3px 0px 3px 3px;
+	width:99%;
+}
+
+#destination.android .control input {
+	border:0;
+	width:30px;
+	float: right;
+}
+
+#destination.android .formInput {
+	display: table;
+	text-align:right;
+	min-height: 30px;
+	width: 99%;
+}
+
+#destination.android .formLine {
+	width:99%;
+}

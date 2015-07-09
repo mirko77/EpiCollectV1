@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - {{entry.title}} Entries {% endblock %}
+
+{% block content %}
+    <P>The entry <i>{{entry.title}}</i> has the following data:
+    <DL>
+    {% for field in fields %}
+        {% ifequal field.name "ecPhotoPath"%}
+        <DT>Image
+        <DD><a href="/showImageNamed?fileName={{field.value}}"><img src="/showImageNamed?fileName={{field.value}}"/></a>
+        {% else %}
+        <DT>{{field.name}}
+        <DD>{{field.value}}
+        {% endifequal %}
+    {% endfor %}
+    </DL>
+{% endblock%}

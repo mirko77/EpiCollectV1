@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - Update Homepage description and picture {% endblock %}
+
+{% block subtitle %}{{projectName}}{% endblock %}
+
+{% block script %}
+		<meta http-equiv="Pragma" content="no-cache" />
+		<script type="text/javascript" src="/static/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="/static/jquery-ui-1.7.2.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+		<div id="success"></div>
+		<div id="error" class="error">{{error}}</div>
+					 
+		<table width="100%">
+				<tr>
+						<td id="projectDescription" style="width:50%;vertical-align:middle;">{{projectDescription|safe}}</td>
+						<td class="projectImage" style="width:50%;text-align:center;vertical-align:middle;">{{projectImage|safe}}</td>
+				</tr>	
+		</table>
+ 
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" id="dataView">{{userMenu|safe}}</table>
+		<br />
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" id="projectAdmin">{{adminMenu|safe}}</table>
+		<br />
+		<p style="width:100%;text-align:center;vertical-align:bottom;"><span id="getFormLink">{{getFormLink|safe}}</span><span id="login">{{loginLink|safe}}</span></p> 
+		
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - Tutorial {% endblock %}
+
+{% block content %}
+<H3>EpiCollect Tutorial</H3>
+<P>This document will show you how to use EpiCollect. It uses the iPhone app to illustrate the service; the
+Android app is fundamentally identical, but its use is slightly more complex.</P>
+
+<P>As of this writing, the service is in alpha test, and some tweaking is still going on. As such, its final appearance
+is likely to differ slightly from the screenshots below; but the substance should be the same.</P>
+
+<P><b>Also, note that for all the web pages shown below, the URL "http://localhost:8081/" must be replaced by the URL
+"http://www.epicollect.net/" for real-world use.</b></P>
+
+<BR/><BR/>
+<P><b>1. Create Project</b></P>
+<P>EpiCollect data is organized by <i>project</i>. Anyone can create a new project. To do so, you simply need to
+navigate to www.epicollect.net, select "Create Project", and enter a project name on the following screen:
+
+<img border=1 src="/static/screenshots/jpgs/1-create-project.jpg"/>
+
+<BR/><BR/>
+<P><b>2. Project Home</b></P>
+<P>You'll then be taken to the home page for the new project. For a project named "Project Name", its home page URL will be
+<b>http://www.epicollect.net/project.aspx?name=Project+Name</b></P>
+<img border=1 src="/static/screenshots/jpgs/2-project-home.jpg"/>
+
+<BR/><BR/>
+<P><b>3. Sign In</b></P>
+<P>You'll need to sign in with a Google Account before you can create a form or view project data. Anyone can create a Google
+Account, and any email address can be used to create one. EpiCollect will not pass your email address on to third parties.</P>
+<img border=1 src="/static/screenshots/jpgs/3-sign-in.jpg"/>
+
+<BR/><BR/>
+<P><b>4. Define Form</b></P>
+<P>You'll need to define the form that your users will use to collect data on their smartphones. EpiCollect's FormBuilder
+provides a simple interface. You start with a blank template, drag-and-drop form elements onto it, and fill in their details.
+A help file is available if you need assistance.</P>
+<img border=1 src="/static/screenshots/jpgs/4-new-form.jpg"/>
+
+<P>Once your form is complete -</P>
+<img border=1 src="/static/screenshots/jpgs/5-build-form.jpg"/>
+
+<P>- just press "Save" to save it to the database. When you go back and edit the form, its version number is automatically
+incremented. (Old version are kept in the database in case they are needed again.)</P>
+<img border=1 src="/static/screenshots/jpgs/6-save-form.jpg"/>
+
+<BR/><BR/>
+<P><b>5. Check Form XML</b></P>
+
+<P>Once you have created its form, its XML definition is available online, ready for installation into your users'
+EpiCollect apps. A link from the project home page allows you to also inspect the XML yourself, if you're so inclined.</P>
+<img border=1 src="/static/screenshots/jpgs/7-form-XML.jpg"/>
+
+<P>That's all you need to do on the server side - let's go to the app!</P>
+<img border=1 src="/static/screenshots/jpgs/8-app-splash.jpg"/>
+
+<BR/><BR/>
+<P><b>6. Configure App</b></P>
+<P>To configure EpiCollect to use your new form, you need to go to from the home screen...</P>
+<img border=1 src="/static/screenshots/jpgs/9-app-home.jpg"/>
+
+<P>...to the Settings page.</P>
+<img border=1 src="/static/screenshots/jpgs/10-app-settings.jpg"/>
+
+<P>There, you should enter your project name, and set the <i>Form URL</i> to a URL of the form
+<b>http://epicollectserver.appspot.com/getForm?projectName=Project+Name</b>. Both these steps are crucial:
+don't get either the URL or the project name wrong!</P>
+<img border=1 src="/static/screenshots/jpgs/11-my-form.jpg"/>
+
+<BR/><BR/>
+<P><b>7. Add New Entries</b></P>
+<P>Now go to the "New Entry" page, and lo and behold, the form you defined on the server appears.</P>
+<img border=1 src="/static/screenshots/jpgs/12-new-entry.jpg"/>
+
+<P>Fill in the data for that form, select SAVE, and you've created a new EpiCollect entry.</P>
+<img border=1 src="/static/screenshots/jpgs/13-new-entry-1.jpg"/>
+<img border=1 src="/static/screenshots/jpgs/14-new-entry-2.jpg"/>
+
+<BR/><BR/>
+<P><b>8. List Entries</b></P>
+<P>From the app's main menu, you can see a list of all the EpiCollect entries on your smartphone.</P>
+<img border=1 src="/static/screenshots/jpgs/15-entry-list.jpg"/>
+
+<P>You can filter the list depending on form values.</P>
+<img border=1 src="/static/screenshots/jpgs/16-filtered-list.jpg"/>
+
+<BR/><BR/>
+<P><b>9. Map Entries</b></P>
+<P>On the "Map Entries" page, you can plot the app's data on a Google Map, and, again, filter what's shown on
+the map depending on form values.</P>
+<img border=1 src="/static/screenshots/jpgs/17-filtered-map.jpg"/>
+
+<BR/><BR/>
+<P><b>10. Synchronize Data</b></P>
+<P>The "Sync" button on the entries list allows you to upload entries to, and download entries from, the EpiCollect server.
+As soon as you see <i>Sync Complete</i> ...</P>
+<img border=1 src="/static/screenshots/jpgs/18-data-sync.jpg"/>
+
+<BR/><BR/>
+<P><b>11. Browse Entries</b></P>
+<P>...the data is available for browsing on the server, where you can list all the entries collected by all the apps</P>
+<img border=1 src="/static/screenshots/jpgs/19-server-browse.jpg"/>
+
+<P>and view the details for any particular entry.</P>
+<img border=1 src="/static/screenshots/jpgs/20-server-details.jpg"/>
+
+<BR/><BR/>
+<P><b>12. Map Data</b></P>
+<P>Once the data is uploaded to the server, you can plot it all on a map, and filter the map by form values, time, and user ID.</P>
+<img border=1 src="/static/screenshots/jpgs/21-map.jpg"/>
+
+{% endblock%}

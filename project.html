@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <link type="text/css" rel="stylesheet" href="http://www.epicollect.net/website/css/styles.css" />
+        <style type="text/css">
+            #error { text-align: left; color: #ff0000; }
+            ul{list-style:none;}
+            .projectName { font-size:24pt;color:#000000; margin:-50px 0 50px -150px; }
+        </style>
+        <title>EpiCollect Server - Project Home</title>
+        <meta http-equiv="Pragma" content="no-cache" />
+        <script type="text/javascript" src="/static/jquery-1.3.2.min.js"></script>
+        <script type="text/javascript" src="/static/jquery-ui-1.7.2.min.js"></script>
+        <script>
+						var owner = false, loggedin = false;
+						var projectKey = "";
+						var projectName = "";
+						var browser = "";
+						var ticket = false;
+						
+            function getRequestParameter ( parameterName ) {
+                var queryString = window.location.search.substring(1);
+                var parameterName = parameterName + "=";
+                if ( queryString.length > 0 ) {
+                    begin = queryString.indexOf ( parameterName );
+                    if ( begin != -1 ) {
+                        begin += parameterName.length;
+                        end = queryString.indexOf ( "&" , begin );
+                        if ( end == -1 ) {
+                            end = queryString.length
+                        }
+                        return unescape ( queryString.substring ( begin, end ) );
+                    }
+                }
+                return "";
+            }
+						
+            projectKey=getRequestParameter("key");
+            projectName=getRequestParameter("name");
+						
+            $(/*function() {
+								
+								browser = navigator.userAgent.toLowerCase();
+                
+                $("#hasForm").hide();
+               
+                
+                
+                //$(".projectName").html(projectName);
+                var homeURL='/project.html?name='+projectName;
+                $("#homePageLink").html('<a href="'+homeURL+'">'+homeURL+'</a>');
+								$.ajax({
+                    type: "GET",
+                    url: "validateTicket.asp?ticket="+ticket+"&projectKey="+projectKey+"&projectName="+projectName,
+                    dataType: "html",
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+										loggedin = XMLHttpRequest.statusText.match(/(Sorry|No project found)/gi);
+                		owner = false;
+                		draw();
+                    },
+                    success: function (xml, status, req) {
+                    	if((navigator.userAgent.toLowerCase().indexOf("opera")>=0 || navigator.userAgent.toLowerCase().indexOf("safari")>=0) && xml != "ticket validated"){
+                    		loggedin = xml.match(/Sorry/gi);
+                    	}
+                    	
+                    	if((navigator.userAgent.toLowerCase().indexOf("opera")>=0 || navigator.userAgent.toLowerCase().indexOf("safari")>=0) && xml != "ticket validated"){
+                    		owner = false
+                    		//alert(xml);
+                    	}
+                    	else
+                        {
+                            owner = (xml == "ticket validated");
+                        }
+                        draw();
+                    }
+						});
+            }*/
+						draw);
+
+            function draw(){
+               // alert(projectKey);
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "/project.asp",
+                    data: {
+                        "projectKey" : projectKey,
+                        "projectName" : projectName
+                    },
+                    dataType: "json",
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $("#error").html("Error: "+errorThrown);
+                    },
+                    success: function (json) {
+                        
+                        if (json.error!="none")
+                            $("#error").html(json.error);
+                        else {
+                            //in case we had the key, not the name
+                            $(".projectName").html(json.projectName);
+                            $("#projectDescription").html("<p>" +  json.description.replace("\r\n", "</p><p>") + "</p>");
+                            if(json.hasImage == "True")
+                            	$(".projectImage").html("<img src=\"projectImage.asp?projectKey=" + json.projectKey + "\" />");
+                            
+                            	
+                            homeURL= "/project.html?name="+json.projectName;
+                            $("#homePageLink").html('<a href="'+homeURL+'">'+homeURL+'</a>');
+    
+                            if(owner)
+                            {
+                            	//var createEditURL='/login.html?destination=editForm&firstTime=true&projectKey='+json.projectKey;
+                            	//if (browser.indexOf("safari")>=0 || browser.indexOf("msie")>=0 || browser.indexOf("opera")>=0)
+        	                        createEditURL=json.loginUrl //try to prevent an infinite redirection loop
+                            	$("#createEditLink").html('<a href="'+createEditURL+'">Create/Edit Project Form</a>');
+                            }
+                            else if(document.cookie.indexOf("dev_appserver_login") < 0)
+                            {
+                               
+                            	//var createEditURL='/login.html?destination=projectHome&firstTime=true&projectKey='+json.projectKey;
+                            	//if (browser.indexOf("safari")>=0 || browser.indexOf("msie")>=0 || browser.indexOf("opera")>=0)
+                            	//{
+                            		createEditURL=json.loginUrl;
+                            	//}
+                            	$("#login").html('| <a href="'+createEditURL+'">Login</a>');
+                            }
+                            else
+                            {  
+								if(document.referrer.match( /(createOrEditForm|ProjectDescription)/g )) $("#error").html("You are not authorised to update this project");
+                            }
+                            
+                            if (json.hasForm=="true") {
+                                
+                                var getFormLink='http://epicollectserver.appspot.com/getForm?projectName='+json.projectName;
+                                getFormLink='<a href="'+getFormLink+'" target="__blank">View form definition</a> ';
+                                $("#getFormLink").html(getFormLink);
+                               
+								$("#dataView").html('<tr>' +
+					               '<td colspan="2" bgcolor="#CCCCCC"><strong>View Data </strong></td>'+
+					               '</tr>'+
+					               '<tr>'+
+					                 '<td width="50%" align="center"><a href="http://epicollectserver.appspot.com/listEntries?projectKey='+json.projectKey+'"><img src="http://www.epicollect.net/website/images/projecthome/form_view.png" alt="form" width="98" height="70"></a></td>'+
+					                 '<td width="50%" align="center"><a href="http://epicollectserver.appspot.com/showMap?projectKey='+json.projectKey+'"><img src="http://www.epicollect.net/website/images/projecthome/map.png" alt="map" width="98" height="70"></a></td>'+
+					               '</tr>'+
+					               '<tr>'+
+					                 '<td width="50%" align="center"><a id="listEntries" href="http://epicollectserver.appspot.com/listEntries?projectKey=">Browse '+
+					                 'Project Data</a></td>'+
+					                 '<td width="50%" align="center"><a id="showMap" href="http://epicollectserver.appspot.com/showMap?projectKey=">Show '+
+					                 'Data On Map</a></td>'+
+					               '</tr>');
+								 $("#listEntries").attr('href', '/listEntries?projectKey='+json.projectKey);
+	                             $("#showMap").attr('href', '/showMap?projectKey='+json.projectKey);
+					               
+								if(owner)
+								{
+	                                $("#projectAdmin").html(' <tr><td colspan="2" bgcolor="#CCCCCC"><strong>Project Administration</strong></td>'+
+	                                        '</tr><tr><td width="50%" align="center"><a href="/login-safari.html?destination=editForm&firstTime=true&projectKey='+json.projectKey+'"><img src="http://www.epicollect.net/website/images/projecthome/form_small.png" alt="fomr" width="98" height="70"></a></td>' +
+	                                          '<td width="50%" align="center"><a href="/login-safari.html?destination=ProjectDescription&firstTime=true&projectKey='+json.projectKey+'"><img src="http://www.epicollect.net/website/images/projecthome/homepage_update.png" alt="homeupdate" width="98" height="70"></a></td>' +
+	                                        '</tr>'+
+	                                        '<tr>'+
+	                                          '<td width="50%" align="center"><a href="/login-safari.html?destination=editForm&firstTime=true&projectKey='+json.projectKey+'">Create/Edit '+
+	                                          'Project Form</a><a href="http://epicollectserver.appspot.com/listEntries?projectKey='+json.projectKey +'"></a></td>'+
+	                                          '<td width="50%" align="center"><a href="/login-safari.html?destination=ProjectDescription&firstTime=true&projectKey='+json.projectKey+'">Update '+
+	                                          'Homepage description and picture</a><a href="http://epicollectserver.appspot.com/showMap?projectKey='+json.projectKey+'"></a></td>'+
+	                                        '</tr>'+
+	                                        '<tr>'+
+	                                          '<td colspan="2">&nbsp;</td>'+
+	                                        '</tr>');
+                                }
+								else if(!ticket)
+								{
+									//var createEditURL='/login.html?destination=projectHome&firstTime=true&projectKey='+json.projectKey;
+	                            	//if (browser.indexOf("safari")>=0 || browser.indexOf("msie")>=0 || browser.indexOf("opera")>=0)
+	                            	//{
+	                            		createEditURL="/login-safari.html?destination=projectHome&firstTime=true&projectKey="+json.projectKey; //try to prevent an infinite redirection loop
+	                            	//}
+									
+								}
+ 
+                            }
+                            else
+                            {
+                            		$("#projectDescription").html("<p>The url of this project's homepage is <a href=\"http://www.epicollect.net/project.html?name=" +json.projectName+  "\">http://www.epicollect.net/project.html?name=" +json.projectName+  "</a><p>Congratulations, you have now created your project wesbite. Before submitting data you must create a Form - to do this click the 'create/Edit Project Form Icon below. For instructions please click the link at the top left of this page.</p><p>You can also add some explanatory text and upload an image which will appear here by clicking the Update Project description and picture icon.</p>");
+                            	 $("#projectAdmin").html('  <tr><td colspan="2" bgcolor="#CCCCCC"><strong>Project Administration</strong></td>'+
+	                                        '</tr><tr><td width="50%" align="center"><a href="/login-safari.html?destination=editForm&firstTime=true&projectKey='+json.projectKey+'"><img src="http://www.epicollect.net/website/images/projecthome/form_small.png" alt="fomr" width="98" height="70"></a></td>' +
+	                                          '<td width="50%" align="center"><a href="/login-safari.html?destination=ProjectDescription&firstTime=true&projectKey='+json.projectKey+'"><img src="http://www.epicollect.net/website/images/projecthome/homepage_update.png" alt="homeupdate" width="98" height="70"></a></td>' +
+	                                        '</tr>'+
+	                                        '<tr>'+
+	                                          '<td width="50%" align="center"><a href="/login-safari.html?destination=editForm&firstTime=true&projectKey='+json.projectKey+'">Create/Edit '+
+	                                          'Project Form</a><a href="http://epicollectserver.appspot.com/listEntries?projectKey='+json.projectKey +'"></a></td>'+
+	                                          '<td width="50%" align="center"><a href="/login-safari.html?destination=ProjectDescription&firstTime=true&projectKey='+json.projectKey+'">Update '+
+	                                          'Homepage description and picture</a><a href="http://epicollectserver.appspot.com/showMap?projectKey='+json.projectKey+'"></a></td>'+
+	                                        '</tr>'+
+	                                        '<tr>'+
+	                                          '<td colspan="2">&nbsp;</td>'+
+	                                        '</tr>');
+                            }
+                        } //success
+                    }
+                });
+            }
+        </script>
+    
+        
+    </head>
+    <body style="font-family:Helvetica">
+        <div id="container">   
+            <span style="width:90%;display:inline-block;"><a href=".."><img src="http://www.epicollect.net/images/logo_new.png" alt="EC_logo" style="vertical-align:bottom;" /></a><span class="projectName"></span></span> <span style="width:9%;text-align:right;display:inline-block;"><a href="http://www.epicollect.net/instructions" target="__blank">Instructions</a></span>
+            <div id="nav">
+                <!-- <a href="http://www.epicollect.net/beta.html">Home</a>
+                <a href="#">Handsets</a>
+                <a href="#">Mobile Networks</a>
+                <a href="#">General Information</a> 
+                <a href="#">Tutorial</a>  
+                <a href="#">FAQ</a> -->
+            </div>
+            <div id="mainbox">
+            	 <div id="fullwidth">
+            	
+                <div id="content">
+                    <div id="success"></div>
+                    <div id="error"></div>
+                   
+	     	<table>
+	     		<tr>
+	       			<td id="projectDescription" style="width:50%;vertical-align:middle;"></td>
+	       			<td class="projectImage" style="width:50%;text-align:center;vertical-align:middle;"></td>
+	       		</tr>	
+	       </table>
+	       
+	       <table width="100%" border="0" cellspacing="0" cellpadding="0" id="dataView">
+		    
+           </table>
+	       <p>&nbsp;</p>
+	       <table width="100%" border="0" cellspacing="0" cellpadding="0" id="projectAdmin">		   
+           </table>
+	       <p style="width:100%;text-align:center;vertical-align:bottom;"><span id="getFormLink"></span><span id="login"></span></p> 
+            </div>    
+            </div>   
+            </div>
+            <div id="footer"></div>
+            <div id="foot"> 
+                <div align="center"><a href="http://www.imperial.ac.uk/" target="_blank">Hosted and Developed
+                    at Imperial College London</a> | <a href="mailto:d.aanensen@imperial.ac.uk">Contact
+                    us </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

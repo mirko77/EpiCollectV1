@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - Update Project Home {% endblock %}
+
+{% block subtitle %}{{projectName}}{% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block content %}
+<div id="projectHome" style="margin-bottom:10px;"><a href="/project.html?name={{projectName}}" target="_top"><img src="http://www.epicollect.net/images/home_sm.png" alt="project Home" style="vertical-align:bottom;" />Back to project home</a></div>
+<div id="success"></div>
+<div id="error"></div>
+<br />
+<div id="header">
+		<h1>Update Desctiption and Picture for {{projectName}}</h1>
+</div>
+<p>Here you can add an introductory paragraph describing your project - for example, what kind of data you are collecting? the reason you wish people to collect data for your project etc.</p>
+<p>You may also want to include your email address should you wish people to contact you directly. Additionally, you can also upload an image which will be displayed to the top right of your project homepage.</p>
+<h2>Current Description</h2>
+<div class="projectDescription">{{projectDescription|safe}}&nbsp;</div>
+<form id="projectProperties" method="post" action="updateProject.asp" enctype="multipart/form-data">
+		<input type="hidden" name="projectName" value="{{projectName}}" />
+		<input type="hidden" name="projectKey" value="{{projectKey}}" />
+		<table>
+				<tr><td><b>New description</b></td><td> <textarea name="projectDescription" class="projectDescriptionField" style="width:400px;height:200px">{{projectDescription|safe}}</textarea></td></tr>
+				<tr><td><b>Project image</b></td><td><input type="file" name="projectImg" id="projectImg" />{{projectImage|safe}}</td></tr>
+				<tr><td></td><td><input type="checkbox" name="removeImg" onchange="removeImgChange();"></input> To simply remove the existing image check this box</td></tr>
+				<tr><td><input type="submit" value="Save changes" name="submit" /></td><td><input type="reset" name="reset" value="Revert to saved version" /></td></tr>
+</table>
+</form>
+
+{% endblock %}

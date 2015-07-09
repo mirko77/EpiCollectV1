@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link type="text/css" rel="stylesheet" href="/css/styles.css" />
+        <style type="text/css">
+            #error { text-align: left; color: #ff0000; }
+            ul{list-style:none;}
+            .projectName { font-size:24pt;color:#000000; margin:-50px 0 50px -150px; }
+        </style>
+        {% block script %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<div id="container">   
+    <span style="width:90%;display:inline-block;"><a href="http://www.epicollect.net/" target="_top"><img src="http://www.epicollect.net/images/logo_new.png" alt="EC_logo" style="vertical-align:bottom;" /></a><span class="projectName projectTitle">{% block subtitle %}{% endblock %}</span></span><span style="width:9%;text-align:right;display:inline-block;"><a href="http://www.epicollect.net/instructions" target="__blank">Instructions</a></span>
+	
+    <div id="nav">
+          <!--  <a href="http://www.epicollect.net/beta.html">Home</a>
+        <a href="#">Handsets</a>
+		<a href="#">Mobile Networks</a>
+        <a href="#">General
+        Information</a> 
+		 <a href="#">Tutorial</a>  
+		 <a href="#">FAQ</a>-->    </div>
+
+
+    	<div id="mainbox">
+			<div id="fullwidth">
+				<div id="content">
+					
+					{% block content %}{% endblock %}
+					
+				</div>
+			</div>
+	</div>
+ 
+
+   
+    <div id="footer"></div>
+    <div id="foot"> 
+      <div align="center"><a href="http://www.imperial.ac.uk/" target="_blank">Hosted and Developed
+          at Imperial College London</a> | <a href="mailto:d.aanensen@imperial.ac.uk">Contact
+        us </a></div>
+    </div>
+</div>
+
+</body></html>

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - {{project.name}} Feedback {% endblock %}
+
+{% block script %}
+
+{% endblock %}
+
+{% block content %}
+	
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Sender</th>
+                <th>Subject</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <h1>User Feedback</h1>
+            {% if messages %}
+                {% for msg in messages reversed %}
+                    <tr class="{{msg.feedbackType}}">
+                        <td>{{msg.sender}}</td>
+                        <td>{{msg.subject}}</td>
+                        <td>{{msg.message|linebreaks|escape}}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                    <tr class="{{msg.feedbackType}}">
+                        <td colspan="3"><strong><em>No Messages</em></strong></td>
+                    </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <div id="imagePanel" style="float:left"></div>
+    <div id="downloadPanel" style="float:right"></div>
+{% endblock%}

@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - {{project.name}} Entries {% endblock %}
+
+{% block script %}
+<link rel="stylesheet" type="text/css" href="../static/map/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="../static/fileuploadfield.css" />
+<style type="text/css">
+	.upload-icon {
+            background: url('../static/image_add.png') no-repeat 0 0 !important;
+        }
+	
+</style>
+<script type="text/javascript" src="../static/map/ext-base.js"></script>
+<script type="text/javascript" src="../static/map/ext-all.js"></script>
+<script type="text/javascript" src="../static/FileUploadField.js"></script>
+<script type="text/javascript" src="../static/Extvalidation.js"></script>
+<script type="text/javascript" src="../static/EntryWindow.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+var data = [];
+var store;
+var popup;
+var grid;
+var imagePnl;
+
+var page = 1;
+var pageSize = 40;
+
+function init(){
+	popup = new EcEntryWindow({
+		id: 'popup',
+		project: '{{project.name}}',
+		form: [
+			{% for field in fields %}{
+					name: '{{field.name|escape}}',
+					type: '{{field.type}}',
+					label: '{{field.label|escape}}',
+					title: '{{field.title|escape}}',
+					required: {{field.required}},
+					numeric: {{field.numeric}},
+					chart: '{{field.chart}}',
+					options: [
+						{% for opt in field.options %}{
+							label: '{{opt.label|escape}}',
+							value: '{{opt.value|escape}}'
+						}{%if not forloop.last%},{%endif%}
+				        {%endfor%}
+					]
+			}{%if not forloop.last%},{%endif%}
+	        {%endfor%}
+		]
+	}, '{{uploadurl}}');
+	
+    store = new Ext.data.ArrayStore({
+        fields: [
+           {name:'key'},
+           {name: 'title'},
+           {name: 'dateCreated', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+           {name: 'latitude', type: 'float'},
+           {name: 'longitude', type: 'float'},
+           {name: 'altitude', type: 'float'},
+           {name: 'photo'},
+           {name: 'deviceId'},
+           {name: 'entryId'},
+           {name: 'lastEdited', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+           {name: 'timeUploaded', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+           {name: 'enterpriseName'},
+           {name: 'projectName'},
+           {% for field in fields %}{name: '{{field.name|escape}}'}{%if not forloop.last%},{%endif%}
+           {%endfor%}
+        ],
+   });
+  
+   store.loadData(data);
+    imagePnl = new Ext.Panel({
+	   title:'Entry Image', 
+	   renderTo:'imagePanel',
+	  width: (Ext.get('dataGrid').getWidth()/2),
+	   margins : {
+			top : 5,
+			left : 5,
+			bottom : 5,
+			right : 5
+		}
+	});
+  
+   
+   
+    grid = new Ext.grid.GridPanel({
+	   margins : {
+			top : 5,
+			left : 5,
+			bottom : 5,
+			right:5
+		},
+       store: store,
+       {%if isOwner%}
+			tbar:{
+				
+				items:[
+				       {
+					       text:'Add entry'
+					       
+				       },
+				       {
+					       text:'Edit entry',
+							disabled: true	       
+				       },
+				       {
+					       text:'Remove entry',
+					       disabled: true
+				       },
+				       '-'
+				]
+       		},
+	   {%endif%}
+     	selModel:new Ext.grid.RowSelectionModel({
+			singleSelect:true	
+	   }),
+       columns: [
+           {header:'Key', sortable: true, dataIndex: 'key', hidden: true, editable: false},
+           {header:'Device', sortable: true, dataIndex: 'deviceId', hidden: true, editable: false},
+           {header:'Entry ID', sortable: true, dataIndex: 'entryId', hidden: true, editable: false},
+           {id:'title',header: 'title', sortable: true, dataIndex: 'title', editable: false},
+           {header: 'Created',sortable: true, dataIndex: 'dateCreated', editable: false},
+           {header: 'Latitude', sortable: true, dataIndex: 'latitude', editable: true, editor:new Ext.form.TextField({})},
+           {header: 'Longitude', sortable: true, dataIndex: 'longitude', editable: true, editor:new Ext.form.TextField({})},
+           {header: 'Altitude', sortable: true, dataIndex: 'altitude', editable: true, editor:new Ext.form.TextField({})},
+           {header: 'Last Edited',sortable: true, dataIndex: 'lastEdited', hidden: true, editable:false},
+           {header: 'Uploaded',sortable: true, dataIndex: 'timeUploaded', hidden: true, editable:false},
+           {header: 'Enterprise', sortable: true, dataIndex: 'enterpriseName', hidden: true},
+           {header: 'Project', sortable: true, dataIndex: 'projectName', hidden: true, editable:false},
+         
+           {% for field in fields %}
+     			{header: '{{field.label|escape}}',sortable: true, dataIndex: '{{field.name|escape}}', editable:true},
+           {%endfor%}
+           {header: 'Photo', sortable: true, dataIndex : 'photo', editable: false, hidden: false}
+       ],
+       stripeRows: true,
+       autoExpandColumn: 'title',
+       height: 350,
+       width: Ext.get('dataGrid').getWidth(),
+       title: '{{project.name}} Entries',
+       stateful: false,
+       stateId: 'grid'        
+   });
+   {%if isOwner%}
+   grid.getSelectionModel().on('selectionchange', function(model){	   
+		grid.getTopToolbar().setDisabled(model.getCount() <= 0);
+   }, this);
+   
+   grid.getTopToolbar().items.get(2).on('click', function(){
+		Ext.Ajax.request({
+			url:'removeEntry',
+			params: {
+				entryKey : grid.getSelectionModel().getSelected().data["key"],
+				projectKey : '{{project.key}}'
+			},
+			success: function(res){
+				reloadEntries();
+			}	
+		});
+	}, this);
+   grid.getTopToolbar().items.get(1).on('click', function(){
+		//open edit for and populate
+	   if(!popup)
+			popup = new EcEntryWindow({id: 'popup'}, '{{uploadurl}}');
+		popup.setEntry(grid.getSelectionModel().getSelected());
+		popup.show();
+	}, this);
+   grid.getTopToolbar().items.get(0).on('click', function(){
+		//open edit for and populate
+		if(!popup)
+			popup = new EcEntryWindow({id: 'popup'}, '{{uploadurl}}');
+		popup.setEntry(false);
+		popup.show();
+	}, this);
+   {%endif%}
+   grid.addListener('rowclick', function(grid,row){
+	   try{
+		 imagePnl.update("<img style=\"max-width:800px\" src=\"" + grid.getStore().getAt(row).get('photo') + (grid.getStore().getAt(row).get('photo').match(/\?/g) ? "&width=200&height=300\" alt=\"" : "\" alt=\"" ) + grid.getStore().getAt(row).get('title') + "\"/>");
+	   }catch(err){alert(err);}		
+   });
+   grid.addListener('sortchange' , function(grid, sortInfo){
+	   	store.removeAll();
+		getEntries(pageSize, pageSize * (page - 1));
+   });
+   
+   grid.render('dataGrid');
+ 
+	var dlFileType = new Ext.form.ComboBox({
+		allowBlank:false,
+		blankText:"You must chose a file type.",
+		editable:false,
+		emptyText:"Please select...",
+		forceSelection:true,
+		typeAhead: true,
+	    triggerAction: 'all',
+	    lazyRender:true,
+	    mode: 'local',
+		store: new Ext.data.ArrayStore({
+			fields: ['func', 'fileType'],
+			data: [['getXML', 'XML'],['getCSV', 'CSV']]//,['getXLS', 'Excel 97-2000']]
+		}),
+		valueField : 'func',
+		displayField: 'fileType'
+	});
+   
+   var dlPanel = new Ext.Panel({
+	   title: 'Download Data',
+	   width: (Ext.get('dataGrid').getWidth()/2),
+	   margins : {
+  				top : 5,
+  				left : 5,
+  				bottom : 5,
+  				right:5
+			},  		
+	   layout: {
+	   		type:'hbox',
+	   		padding: '5',
+	   		defaultMargins : {
+  				top : 5,
+  				left : 5,
+  				bottom : 5,
+  				right:5
+			}   				
+   		},
+	   content: ''	    	   
+	});
+   
+	dlPanel.add([new Ext.form.Label({
+		text: 'Select file format : '
+	}) ,
+	dlFileType,
+		new Ext.Button({
+			text:'Download', 
+			listeners:{
+				click:function(){
+					if(dlFileType.value == "getXML")
+					{
+						window.open("./getMapXML?projectKey={{projectKey}}");
+					}
+					else if(dlFileType.value == "getCSV")
+					{
+						window.top.location = "./listEntriesCSV.csv?projectKey={{project.key}}";
+					}
+					else
+					{
+						alert("Please select a file format from the list");
+					}
+				}
+			}
+		})]
+	);
+	dlPanel.render('downloadPanel');
+
+	popup.on('saved', reloadEntries, this);
+
+	getEntries(pageSize,0);
+}
+	
+	
+	function reloadEntries()
+	{
+		store.removeAll();
+		getEntries(100,0);
+	}
+	
+	/*function nextPage()
+	{
+		if(store.getCount() != pageSize)
+		{
+			alert("This is the last page");
+			return;
+		}
+			
+		store.removeAll();
+		page++;
+		getEntries(pageSize, pageSize * (page - 1))
+	}
+	
+	function prevPage()
+	{
+		if(page == 1)
+		{
+			alert("You are viewing the first page");
+			return;
+		}
+		
+		store.removeAll();
+		page--;
+		getEntries(pageSize, pageSize * (page - 1))
+	}*/
+	
+	function getEntries(number, offset)
+	{
+		Ext.get("loader").show();
+	
+		var ajax = Ext.Ajax; 
+		
+		var st = store;
+		var sortState = st.getSortState();
+		if(!sortState) sortState = {field : "ecTimeCreated", direction : "asc"}
+		
+		
+		
+		ajax.request({
+			url:"getEntries?num=" + number + "&offset=" + offset + "&projectKey={{project.key}}&sortField=" + sortState.field  + "&sortDir=" + sortState.direction,
+			method:"GET",
+			success:function(res, opts){
+			try{
+				var Record = Ext.data.Record;
+				var g = grid;
+				var records = JSON.parse(res.responseText);
+				
+				if(records.length == 0)
+				{
+					//alert("You are already on the last page");
+					//prevPage();
+					window.updater = setInterval(function(){ clearInterval(window.updater); getEntries(pageSize, st.getCount())}, 60000);
+					Ext.get("loader").hide();	
+					return;
+				}
+				
+				var len = records.length;
+				var newrecs = [];
+				
+				for(var i = len; i--;)
+				{
+					var rec = new Record(records[i]);
+					newrecs.push(rec);
+				}
+				
+				st.add(newrecs);
+				st.sort(sortState.field, sortState.direction);
+				
+				g.render();
+				
+				
+				if(records.length == number) 
+				{
+					getEntries(number, offset + number);
+				}
+				else
+				{
+					Ext.get("loader").hide();	
+				}
+				
+				//Ext.get("pageNo").update(page + " (entries " + offset +" to " + (number + offset) + ")");
+			}catch(err){Ext.MessageBox.alert("Error",err);}
+			}
+		});
+	}
+
+Ext.onReady(init);
+</script>
+{% endblock %}
+
+{% block content %}
+	<div id="projectHome" style="margin-bottom:10px;"><a href="http://www.epicollect.net/project.html?name={{project.name}}" target="_top"><img src="http://www.epicollect.net/images/home_sm.png" alt="project Home" style="vertical-align:bottom;" />Back to project home</a></div>
+    <p style="padding-bottom:15px;">The project <i>{{project.name}}</i> has the following EpiCollect entries:<span id="loader" style="float:right;">Data loading...<img style="width:16px;height:16px" alt="loading data..." src="static/images/default/shared/blue-loading.gif" /></span></p>
+    <div id="dataGrid"></div>
+   <!-- <div id="girdControls"><a href="javascript:prevPage();">Previous</a> Page <span id="pageNo"></span> <a href="javascript:nextPage();">Next</a> </div>-->
+    <div id="imagePanel" style="float:left"></div>
+    <div id="downloadPanel" style="float:right"></div>
+{% endblock%}

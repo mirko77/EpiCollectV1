@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - Home {% endblock %}
+
+{% block content %}
+    <P>Welcome to EpiCollect Server!</P>
+    <!--
+    <P>
+    {% if error %} <P><b>{{error}}</b></P>{% endif %}
+    <P>We are storing data from the following enterprises:
+    <UL>
+    {% for enterprise in enterprises %}
+        <LI><a href="/showApplicationsFor?enterpriseKey={{enterprise.key}}">{{enterprise.name}}</a>
+    {% endfor %}
+    </UL>
+    <P/>
+    <table><tr>
+    <td>Add New Enterprise:</td>
+    <td><form name="addEnterprise" action="/addEnterprise"><input name="enterpriseName" size=30"><input type="submit" value="Add"></form></td>
+    </tr></table>
+    -->
+{% endblock%}

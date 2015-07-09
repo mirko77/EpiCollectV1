@@ -1,0 +1,13 @@
+Python:
+ Time-slider bug - just include slider.js?
+ Title field when browsing.
+
+Map:
+ Negative-longitudes zoom bug.
+
+iPhone:
+ Sporadically vanishing keyboard?
+ Repeated selections of one select-multiple option.
+
+Android:
+ User email?

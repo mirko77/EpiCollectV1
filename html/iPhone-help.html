@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}EpiCollect Help - iPhone app{% endblock %}
+
+{% block content %}
+<center><H2>EpiCollect iPhone App Help</H2></center>
+
+<a name="add"><H3>Setting Up</H3>
+<P>Before you begin adding entries, there are three settings you should configure in the Settings screen:
+<UL><LI>Your user email.</LI>
+<LI>The name of your project.</LI>
+<LI>The form URL.</LI></UL></P>
+
+<P>Your project coordinator will be able to help you with the project name and form URL.
+Please take great care to ensure that both are correct.
+Once you have entered the form URL, go back to the home screen, select "New Entry", and check that your project's form has been correctly downloaded
+from the Internet and installed.
+You only need to do this once.</P>
+
+<P>If you haven't set up your project name or form URL, you will still be able to use EpiCollect, but you will be limited to the default project
+and form, and warned every time you enter data. You must enter a valid email address to be upload or download entries to/from the EpiCollet server.</P>
+
+<a name="add"><H3>Adding and Editing Entries</H3>
+<P>To add an entry, select "New Entry" from the main menu; to edit one, select "List Entries" and choose the entry you wish to edit.
+The add/edit screen allows you to fill in a user-defined form (see <b>Selecting a Form</b>, below.)
+When you add an entry, its location is automatically set to the device's location, if it can be determined using GPS and/or nearby Wi-Fi networks.
+You can subsequently reset the location using the "Override" button.</P>
+
+<P>Please note that you must use the Save button to save an entry; if you navigate away from the page without saving, the entry will not be recorded.</P>
+
+<a name="photos"><H4>Photos and Images</H4>
+<P>To add or replace an entry's photo, (or, on a device with no camera, a saved image) to an entry, select the camera icon, and take a picture or select an
+image in the subsequent screen. The add/edit screen shows only a small thumbnail version of a photo; to view a larger one, double-click that thumbnail.</P>
+
+<a name="status"><H4>Entry Status</H4>
+<P>The entry's synchronization status (see <b>Syncing with a Server</b>) is displayed in the view/edit page. "New" means that the entry has not been saved.
+"Local - not uploaded" means that the entry was created on this device, and has not been synchronized with the server. "Local - data uploaded" means that
+the entry data was created on this device, and has been uploaded, but that its photo, if any, has not. "Local - photo uploaded" means that the entry was
+created on this device, and has been fully uploaded to a server. "External - downloaded" means that the entry was not created on this device, but was
+downloaded from the server. If you modify an external entry, or one that you have previously uploaded, its state changes to "Local - not uploaded."</P>
+
+<a name="delete"><H4>Deletion</H4>
+<P>To delete an entry, select the garbage-can button. A window will pop up enquiring whether you are sure. If you are performing a large number
+of deletions, you may wish to disable this warning on the Settings screen.</P>
+
+<a name="list"><H3>The Entries List</H3>
+<P>This list shows the EpiCollect entries stored on this device. You can set the maximum number of entries to show in this list in the Settings screen,
+under "List max": a setting of 0 means there is no limit. If your form has fields named "title" and/or "subtitle", they will be displayed here; otherwise,
+the entries' creation dates and locations will be shown. See <b>Selecting a Form</b> below. You can also use the search bar to filter the entries shown in
+this list: see <b>Filtering Entries</b> below.</P>
+
+<P>The "Sync" button uploads entries on your device to an external server, and downloads new entries from that server. See <b>Syncing with a Server</b> below
+for the upload/download details. It is important to note that "Sync" only uploads the current contents of the entries list, and only if they have not
+yet been uploaded (as per <b>Entry Status</b> above.) To upload all entries on your device without exception, ensure that this list has no active filter and
+that the "List max" setting is set to 0.
+
+<a name="map"><H3>Mapping Entries</H3>
+<P>This screen shows a Google Map with your entries marked as pushpins. You can set the maximum number of entries to show on the map in the Settings screen,
+under "Map max": a setting of 0 means there is no limit. The map, unlike the list, does not automatically load entries: you need to tell it which entries you
+want it to plot, using the search bar. You can type "all" to see all entries, or filter and group the entries on the map: see <b>Filtering Entries</b>
+below. Please note that the Google Map loads its tiles from the Internet, meaning it only works well when you have an active data connection.</P>
+
+<P>When you select an entry's pushpin, a detail window pops up. If your form has fields named "title" and/or "subtitle", they will be displayed here; otherwise,
+the entry's creation dates and locations will be shown. The arrow button will take you to the add/edit screen for that entry.</P>
+
+<a name="filter"><H3>Filtering Entries</H3>
+<P>There are several ways to filter entries using the search bar. You can simply type <i>local</i> or <i>external</i> to show all the local-origin or external-origin
+entries. You can enter a field name to show all entries which have a value for that field: for instance, if you have a field named pH, just type <i>pH</i> into
+the search bar, and entries which have no value for "pH" will disappear from the list or map.
+
+<P>Please note that the EpiCollect form definition distinguishes between field names, such as "subjectName", and the display names, such as
+"The subject's name:", and that filtering currently operates only on the former. Check your form's definition (see <b>Selecting a Form</b> below) to
+ascertain its field names.</P>
+
+<P>You can also run comparisons. For instance, if you have a field named "pH", you could filter by <i>pH &gt; 7</i>. Please ensure that there are spaces between
+all three values in a comparison. You can do wild-card comparisons, as well; <i>subjectLastName like Smi*</i> will return all entries with a "subjectLastName"
+field that begins with "Smi". Text can also be delimited by double quotes, eg <i>subjectName like "John Smi*"</i>. You can also combine local/external and other
+filters, eg <i>local: ph &gt; 7</i> and <i>external: subjectName like "John Smi*"</i>.
+
+<H4>Filter Groups</H4>
+<P>On the Map screen, you can define up to three different filter groups, separated by commas, and the resulting entry pushpins will be of three different
+colours. For instance, you could divide your entries into three different groups with <i>local: pH &gt;= 7, local: pH &lt; 7, external</i>. For more complex
+grouping and combinations, and for AND and OR statements, we recommend accessing the map on the EpiCollect server via a web browser, rather than using this
+local map.
+
+<H4>Bookmarks</H4>
+<P>EpiCollect saves your filters, so that you don't have to type commonly used ones in again and again. To access and run your most recently used filters
+in either the Map or Entry List page, select the Bookmarks button in the search bar.</P>
+
+<a name="sync"><H3>Syncing with a Server</H3>
+<P>You configure the details of the server with which your app can sync on the Settings screen: in particular, with the "Upload URL", "Image Up URL", and
+"Download URL" settings. (As of this writing, EpiCollect only supports data downloads; image downloads will be added in a future release.) Out of the box,
+EpiCollect is set to synchronize with our publicly accessible server at epicollectserver.appspot.com, but we encourage users to configure their own servers
+using Google's free App Engine service. See the EpiCollect Server documentation for details.
+
+<a name="form"><H3>Selecting a Form</H3>
+<P>EpiCollect comes with a default form, but users are recommended to build their own forms for their own specific projects, and to make these
+form definitions available at a publicly accessible URL. EpiCollect uses a subset of the XForms standard to define forms: see the EpiCollect Server
+documentation for details.</P>
+
+<P>To download a new form definition, set the "Form URL" in the Settings page, and add a new entry or select an existing entry. No existing data will
+be lost if you change forms, although data not included in the new form definition will not appear on the new add/edit screen. To check for a new version
+of your existing form, turn on the "Update Forms" button on the Settings screen, and navigate to the add/edit screen. (Then turn it off again afterwards,
+to save on data charges and speed up the app.)</P>
+
+<a name="apps"><H3>Applications</H3>
+EpiCollect supports multiple projects on a single device. Each project can have its own form and server definitions, and its own
+collection of entries. To add a project, or to change the active project, select "Project" on the Settings screen.
+
+<a name="credits"><H3>Credits</H3>
+<P>EpiCollect was developed at the Department of Infectious Disease Epidemiology at Imperial College London.</P>
+
+<P>This iPhone app was written by Jon Evans, based on the original Android app written by Derek Huntley, and designed by David Aanansen
+as per his paper <i></i>, available online at http://www.spatialepidemiology.net/epicollect.pdf and also in [[publication details]].
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}EpiCollect Help - FormBuilder{% endblock %}
+
+{% block content %}
+<center><H2>EpiCollect FormBuilder Help</H2></center>
+
+<a name="list"><H3>Listing Your Forms</H3>
+
+<P>To see a list of all the forms you have defined for your project, go to your project's home page on
+EpiCollect.net (or your own EpiCollect server) and select the "List Forms" link.</P>
+
+<P>You can then edit an existing form, by selecting the appropriate "Edit" link, or a create a new one,
+by selecting "Create New Form."</P>
+
+<a name="elements"><H3>Form Elements</H3>
+
+<P>At present, EpiCollect supports four kinds of form elements:</P>
+<UL>
+    <LI><i>Text Inputs</i> - contain a single line of user-entered text.
+    <LI><i>Long Text</i> - contain an arbitrary amount (generally, a paragraph or more) of user-entered text.
+    <LI><i>Select Multiple</i> - a list of predefined "checkbox" options, from which the user can select multiple values.
+    <LI><i>Select One</i> - a list of predefined options, of which the user can select only one.
+</UL>
+
+<a name="add"><H3>Adding Form Elements</H3>
+
+<P>In the Form Builder, click the element you want to add in the "Form Elements" column, hold down the mouse button,
+drag the element to the central "Form" column. You can rearrange the elements in that column to indicate the order
+in which you would like them displayed.</P>
+
+<P>When you drop or click on a form element, its details become available for editing in the "Element Details" column.
+
+<a name="edit"><H3>Editing Elements</H3>
+
+<P>When you are finished editing an element, you must click its "Done" button for your changes to be recorded in the form.
+If you wish to delete an element, click its "Delete" button.</P>
+
+<P>You can select a form element's label, ID, option values, and flags in the Element Detail window.</P>
+
+<a name="labels"><H4>Labels</H4>
+
+<P>A form element's "label" is the text shown to the user to explain what the form element means. It should be short and
+to the point, eg "Species Observed".</P>
+
+<a name="ids"><H4>IDs</H4>
+    
+<P>A form element's ID is the identifier for that element, used inside the server database to identify that value.
+For ease of data processing, form elements can consist only of numbers and/or ASCII letters - no other characters, including
+spaces, hyphens, accented characters, or periods, may be used within an ID. The ID for a "Species Observed" element might be
+something like "latinName". Note that IDs must be unique within a form, and must be at least 2 characters long.</P>
+
+<a name="flags"><H4>Flags</H4>
+    
+<P>You can also select whether an element is:</P>
+<UL>
+    <LI>required (the user must fill it out)
+    <LI>read-only (the user cannot fill it out),
+    <LI>the form's title (the contents of this field will be shown when listing entries built from this form)
+    <LI>the form's subtitle (the contents of this field will be shown below its title in map views)
+    <LI>numeric (indicating whether a text input should only allow numbers to be entered as data.)
+    <LI>chartable (indicating that this field can be used as a criterion when building visualization maps.)
+</UL>
+<P>Note that any given form can have only 1 title, 1 subtitle, and no more than 3 chartable fields, and
+that no form element should be simultaneously required and read-only.</P>
+
+
+<a name="editSelects"><H4>Editing Selects</H4>
+
+<P>A "Select Multiple" or "Select One" element may have one or more options. To add an option, click the "Add Option"
+button. Each option has a 'Label', which is text shown to the user (eg "Rat" and "Human") and a 'Value', which is the
+value saved to the database (eg "Rattus rattus" and "Homo sapiens").
+
+<a name="save"><H3>Saving a Form</H3>
+
+<P>When you have finished editing elements (remember to click "Done"!) you should select your form's name and version number,
+and then click the "Finished - save form!" button. If the save is successful, green text reporting the success will appear above
+the FormBuilder; otherwise, red text explaining the problem will appear.</P>
+
+<a name="nameNumber"><H4>Selecting a Name and Version Number</H4>
+
+<P>Form names, like IDs, must consist only of numbers and ASCII letters. Form names should be unique within a server; if you
+are trying to use a form name already allocated to another project, an error message will appear.</P>
+
+<P>You can select a new or edit form's new version number from the "Version Number" drop-down. The combination of form name
+and version number must be unique.</P>
+
+<a name="delete"><H3>Deleting Forms</H3></a>
+
+<P>Form deletion can only be performed by an EpiCollect administrator. If you are running your own EpiCollect server, you can use
+the App Engine console to delete forms.</P>
+
+<a name="nameNumber"><H3>Using Forms</H3>
+
+<P>On an iPhone app, you simply have to point the app to the new form's XML URL, and ensure that the app is set to check for new form
+data; the app will be updated in real time. With the Android version, the app must be recompiled and reinstalled for every new form.</P>
+
+<P>A form's XML URL is of the form:</P>
+<P>http://www.server.name/getForm?name=formName&version=versionNumber</P>
+<P>For instance, if you had a form named "default" with version "1.0" running on the "epicollectserver.appspot.com" server,
+its XML would be available at the URL</P>
+<b>http://epicollectserver.appspot.com/getForm?name=default&version=1.0</b>
+
+<a name="allowDownloadEdits"><H3>Allow Edits to Downloaded Entries</H3>
+
+When users "synchronize" their Android or iPhone app with the EpiCollect server, entries uploaded by other devices are downloaded
+into their app. Check this box if you want to allow your users to edit such entries.
+
+<H3>For Further Help</H3>
+
+<P>Please contact the EpiCollect team if you require further assistance.</P>
+
+{% endblock%}

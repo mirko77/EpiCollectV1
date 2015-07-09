@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../static/map/ext-all.css" />
+		<link rel="stylesheet" type="text/css" href="../static/RowEditor.css" />
+		<script type="text/javascript" src="../static/map/ext-base.js"></script>
+		<script type="text/javascript" src="../static/map/ext-all.js"></script>
+		<script type="text/javascript" src="../static/RowEditor.js"></script>
+		<script type="text/javascript" src="../static/Extvalidation.js"></script>
+		<script type="text/javascript" src="../static/ComboCheckBoxGroup.js"></script>
+		<script type="text/javascript">
+							Ext.onReady(function(){
+								var group = new ComboCheckboxGroup({
+								renderTo:'checkTest',
+								id:'myGroup',
+			     			    
+			     			    fieldLabel: 'Single Column',
+			     			    itemCls: 'x-check-group-alt',
+			     			    // Put all controls in a single column with width 100%
+			     			    columns: 1,
+			     			    items: [
+			     			        {boxLabel: 'MySpace', name: 'MySpace'},
+			     			        {boxLabel: 'Facebook', name: 'Facebook'},
+			     			        {boxLabel: 'Hi5', name: 'Hi5'},
+			     			        {boxLabel: 'Friendster', name: 'Friendster', checked:true},{boxLabel: 'Orkut', name: 'Orkut'},{boxLabel: 'Bebo', name: 'Bebo'},{boxLabel: 'Tagged', name: 'Tagged'},{boxLabel: 'Xing', name: 'Xing'},{boxLabel: 'Badoo', name: 'Badoo'},{boxLabel: 'Xanga', name: 'Xanga'},{boxLabel: '51.com', name: '51com'},{boxLabel: 'Xiaonei', name: 'Xiaonei'},{boxLabel: 'ChinaRen', name: 'ChinaRen'}
+			     			    ]
+		     					});
+
+		     					var other = new Ext.form.TextField({
+									renderTo:"anotherField"
+		     					});
+
+								group.setValue('MySpace,Facebook,Orkut,Xing,');
+
+								//alert(group.getValue());
+							});
+						
+		     				
+		</script>
+	</head>
+	<body>
+		<h1><i>Checkbox</i> test</h1>
+		<div id="checkTest" style="position: relative">&nbsp;</div>
+		<div id="anotherField"></div>
+	</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - Applications {% endblock %}
+
+{% block content %}
+    {% if error %} <P><b>{{error}}</b></P>{% endif %}
+    <P/>
+    <P>{{enterprise.name}} has the following EpiCollect projects:
+    <UL>
+    {% for project in projects %}
+        <LI>{{project.name}}
+        <a href="/showEntriesFor?enterpriseKey={{enterprise.key}}&projectKey={{project.key}}">List Entries</a>
+        <a href="/showFormsFor?projectKey={{project.key}}">List Forms</a>
+    {% endfor %}
+    </UL>
+    <P/>
+    <table><tr>
+    <td>Add New Project:</td>
+    <td><form name="addProject" action="/addProject">
+    <input type="hidden" name="enterpriseKey" value="{{enterprise.key}}">
+    <input name="projectName" size=30">
+    <input type="submit" value="Add"></form></td>
+    </tr></table>
+{% endblock%}

@@ -1,0 +1,308 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>EpiCollect.net</title>
+<link rel="stylesheet" type="text/css" href="http://www.epicollect.net/website/css/styles.css" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<script type="text/javascript" src="static/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="static/jquery-ui-1.8.min.js"></script>
+    <style type="text/css">
+        .columns:after {
+            content: ".";
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+        * html .columns {height: 1%;}
+        .columns{ display:inline-block; }
+        .columns{ display:block; }
+        .columns .column{
+          float:left;
+          display:inline;
+          min-height:360px;
+	  padding: 2px 2px 2px 2px;
+        }
+        .columns .last{ float:right; }
+        .columns .first{ width:180px; background-color:#ffeeee; }
+        .columns .second{ width:380px; margin-left:10px; background-color:#eeffee; }
+        .columns .last{ width:210px; background-color:#eeeeff;}
+	.footers {background-color:#EEEEEE;}
+        .footers .footer{
+	  padding: 2px 0 2px 0;
+          display:inline;
+        }
+        
+        .footers .first{ width:180px; /*background-color:#eeeeee; */}
+        .footers .second{ width:380px; margin-left:10px; /*background-color:#eeeeee;*/ }
+        .footers .last{ width:210px; float:right;} /*background-color:#eeeeee;*/
+ 
+        .formLine { padding: 5px 2px 5px 2px;}
+        .formLineEdit { text-align: right; }
+        .optionLabel { float:left; text-align: left;}
+        .label { font-weight: bold; vertical-align: text-top; }
+	.editing {
+	    background-color:#eeeeff;
+	    padding-right:10px;
+	    margin-right:-10px;
+	}
+	
+	.label:hover {background-color:#CCCCCC; cursor:move;}
+	
+        .formInput { text-align: right; vertical-align: text-top;}
+        .editHeader { text-align: right; }
+        .selectOption { text-align: right; }
+        #error { text-align: center; color: #ff0000; }
+        #success { text-align: center; color: #00ff00; }
+        #listForms { float: left; text-align: left; }
+        #viewHelp { float: right; text-align: right; }
+        #inputOptions { text-align: right; }
+        #detailHeader { text-align: right; }
+        /*#formName {background-color: #eeeeee; }
+        #formVersionNumber {background-color: #eeeeee; }*/
+        #formSubmitButton {text-align:right; }/*background-color: #eeeeee; }*/
+	#selectMultiple{padding-top:2px;}
+	#selectOne{padding-top:2px;}
+	.popup{
+		position:absolute;
+		background-color:#FFFFFF;
+		border:1px solid #CCCCCC;
+		color: #000000;
+		display:inline;
+		padding: 4px 4px 4px 4px;
+		text-align: left;
+		width: 200px;
+		z-index: 9999;
+	}
+	#longText textarea
+	{
+	    width:170px;
+	}
+    </style>
+ <link rel="stylesheet" type="text/css" href="static/EpiSkins.css" />
+<script type="text/javascript">
+	function web()
+	{
+		try{
+		$("#destination").removeClass("android");
+		$("#destination").removeClass("iphone");
+		$("#middle").attr("style", "background-image:none;");
+		}catch(err){alert(err);}
+	}
+
+	function android()
+	{
+		try{
+		$("#destination").addClass("android");
+		$("#destination").removeClass("iphone");
+		$("#middle").attr("style", "background-image:url('static/android_epi.png');background-repeat: no-repeat;background-position: center 50px;");
+		}catch(err){alert(err);}
+	}
+
+	function iphone()
+	{
+		$("#destination").removeClass("android");
+		$("#destination").addClass("iphone");
+		$("#middle").attr("style", "background-image:url('static/iphone_epi.png');background-repeat: no-repeat;background-position: center 50px;");
+	}
+	
+	function popup(ele, title, text)
+	{
+		$(".popup").remove();
+		var offset = ele.offset();
+		ele.after("<div class=\"popup\" style=\"" + ((offset.left + ele.width() + 200) < document.width ? "top:" + (offset.top) + "px;" + "left:" + (offset.left + ele.width()) : "top:" + (offset.top - 25) /*HACK!*/ + "px;" + "right:" + (document.width - (offset.left + ele.width()))) + "px;\"><span style=\"float:right;cursor:pointer;\">[x]</span><b>" + title + "</b><p>" + text + "</p></div>");
+		$("input, textarea, select, a").focus(function(){$(".popup").remove();});
+		$(".popup").click(function(){$(".popup").remove();});
+	}
+</script>
+
+ <script type="text/javascript" src="static/form.js"></script>
+</head><body>
+<div id="container">   
+    <a href=""><img src="http://www.epicollect.net/images/logo_new.png" alt="EC_logo" /></a>
+    <div id="nav">
+         <!-- <a href="http://www.epicollect.net/beta.html">Home</a>
+        <a href="#">Handsets</a>
+		<a href="#">Mobile Networks</a>
+        <a href="#">General
+        Information</a> 
+		 <a href="#">Tutorial</a>  
+		 <a href="#">FAQ</a>-->    </div>
+
+
+    <div id="mainbox">
+   <div id="content">
+        <table width="100%"><tbody><tr><td width="10%">&nbsp;</td>
+        <td width="81%">
+<div id="projectHome" style="margin-bottom:10px;"><a href="/project.html?name="><img src="http://www.epicollect.net/images/home_sm.png" alt="project Home" style="vertical-align:bottom;" />Back to project home</a></div>
+<div id="viewHelp"><a href="http://www.epicollect.net/formHelp.asp" target="_blank">View Form Help</a></div>
+ 
+<div id="success"></div>
+<div id="error"></div>
+ 
+<div id="header">
+    &nbsp;
+</div>
+<p>
+</p><div class="columns">
+    <div id="source" class="column first">
+        <b>Form Elements</b><hr />
+        <div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#textInput'),'Text Input', 'A single line of text, can also be used for numbers by ticking the \'numeric\' field')">?</a></div>
+		<div id="textInput" class="formLine ui-draggable">
+            <div class="label">Text Input</div>
+			<div class="formInput"><input name="inputID" readonly="readonly" /></div>
+        </div>
+        <hr />
+        <div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#longText'),'Long Text', 'several lines of text')">?</a></div>
+		<div id="longText" class="formLine ui-draggable">
+            <div class="label">Long Text</div>
+			
+			<div class="formInput"><textarea name="textarea" readonly="readonly"></textarea></div>
+			
+        </div>
+        <hr />
+		<div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#selectOne'),'Select One', 'A list of options from which only one can be selected')">?</a></div>
+        <div id="selectOne" class="formLine ui-draggable">
+            <div class="label">Select One</div>
+			<div class="control">
+				<div class="formInput">
+					<div class="optionLabel">One</div>
+					<input name="selectOne" value="one" type="radio" readonly="readonly"" />
+				</div>
+				<div class="formInput">
+					<div class="optionLabel">Two</div>
+					<input name="selectOne" value="two" type="radio" readonly="readonly" />
+				</div>
+			</div>
+        </div>
+        <hr />
+		<div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#selectMultiple'),'Select Multiple', 'A list of options from which several can be selected')">?</a></div>
+		
+        <div id="selectMultiple" class="formLine ui-draggable">
+            <div class="label">Select Multiple</div>
+			<div class="control">
+				<div class="formInput">
+					<div class="optionLabel">One</div>
+					<input name="selectMulti" value="one" type="checkbox" readonly="readonly" />
+				</div>
+				<div class="formInput">
+					<div class="optionLabel">Two</div>
+					<input name="selectMulti" value="two" type="checkbox" readonly="readonly" />
+				</div>
+			</div>
+        </div>
+        
+    </div> <!--source-->
+    <div id="middle" class="column second">
+        <b>Form</b> (drag elements between bars)
+		
+		<p><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#middle&gt;p'),'Preview', 'See a preview of what your form will look like when used on the iPhone or an Android phone')">?</a></div>Preview: <a href="#webbie"  id="web" onclick="web();">Web</a>|<a href="#android"  id="web" onclick="android();">Android</a>|<a href="#iphone"  id="web" onclick="iphone();">iPhone</a></p>
+		
+        <hr />
+        <div class="ui-sortable" id="destination">
+		<p>&nbsp;</p></div>
+        <p></p><hr />
+    </div>
+    <div id="details" class="column last">
+        <div id="detailHeader"><b>Element Details</b><hr></div>	
+        <div style="display: none;" id="textInputEdit" class="formLineEdit">
+            <div class="editHeader">
+                <b>Text Input</b>
+            </div>
+            <br /><a href="http://www.epicollect.net/formHelp.asp#labels" target="_blank">Label</a><input name="textInputLabel" type="text"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#textInputEdit'),'Label', 'The label displayed to the user')">?</a></div>
+            <br /><a href="http://www.epicollect.net/formHelp.asp#ids" target="_blank">ID</a><input name="textInputValue"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#textInputEdit'),'ID', 'The name of the column in the database')">?</a></div>
+			
+        </div>
+        <div style="display: none;" id="longTextEdit" class="formLineEdit">
+            <div class="editHeader">
+                <b>Long Text</b>
+                
+            </div>
+            <br /><a href="http://www.epicollect.net/formHelp.asp#labels" target="_blank">Label</a><input name="longTextLabel"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#longTextEdit'),'Label', 'The label displayed to the user')">?</a></div>
+            <br /><a href="http://www.epicollect.net/formHelp.asp#ids" target="_blank">ID</a><input name="longTextValue"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#longTextEdit'),'ID', 'The name of the column in the database')">?</a></div>
+        </div>
+         <div style="display: none;" id="selectOneEdit" class="formLineEdit">
+            <div class="editHeader">
+                <b>Select One</b>
+               
+            </div>
+            <br /><a href="http://www.epicollect.net/formHelp.asp#labels" target="_blank">Label</a><input name="selectOneLabel" /><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#selectOneEdit'),'Label', 'The label displayed to the user')">?</a></div>
+            <br /><a href="http://www.epicollect.net/formHelp.asp#ids" target="_blank">ID</a><input name="selectOneValue" /><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#selectOneEdit'),'ID', 'The name of the column in the database')">?</a></div>
+            <hr />
+            <input name="addSelectOneOption" value="Add Option" type="submit" />
+            <hr />
+            <div id="selectOneOption" class="selectOption">
+                <i>Option</i>: <a href="http://www.epicollect.net/formHelp.asp#editSelects" target="_blank">Name</a><input name="oneOptionLabel" size="12" /><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Option &gt; Name', 'The label displayed to the user')">?</a></div>
+                <br /><a href="http://www.epicollect.net/formHelp.asp#editSelects" target="_blank">Value</a><input name="oneOptionValue" size="12" /><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Option &gt; Value', 'The value entered into the database')">?</a></div>
+                <br><input name="removeSelectOneOption" value="Remove" type="submit">
+                <hr>
+            </div>
+        </div>
+        <div style="display: none;" id="selectMultiEdit" class="formLineEdit">
+            <div class="editHeader">
+                <b>Select Multiple</b>
+              
+            </div>
+            <br><a href="http://www.epicollect.net/formHelp.asp#labels" target="_blank">Label</a><input name="selectMultiLabel"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#selectMultiEdit'),'Label', 'The label displayed to the user')">?</a></div>
+            <br><a href="http://www.epicollect.net/formHelp.asp#ids" target="_blank">ID</a><input name="selectMultiValue"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($('#selectMultiEdit'),'ID', 'The name of the column in the database')">?</a></div>
+            <hr>
+            <input name="addSelectMultiOption" value="Add Option" type="submit">
+            <hr>
+            <div id="selectMultiOption" class="selectOption">
+                <i>Option</i>: <a href="http://www.epicollect.net/formHelp.asp#editSelects" target="_blank">Name</a> <input name="multiOptionLabel" size="12/"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Option &gt; Name', 'The label displayed to the user')">?</a></div>
+                <br><a href="http://www.epicollect.net/formHelp.asp#editSelects" target="_blank">Value</a><input name="multiOptionValue" size="12/"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Option &gt; Value', 'The value entered into the database')">?</a></div>
+                <br><input name="removeSelectMultiOption" value="Remove" type="submit">
+                <hr>
+            </div>
+        </div>
+       
+        <div style="display: none;" id="inputOptions" class="formLineEdit">
+            <hr>
+            <a href="http://www.epicollect.net/formHelp.asp#flags" target="_blank">Required</a> <input name="required" type="checkbox"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Required', 'The user must supply a value for this field.')">?</a></div>
+            <!--<br><a href="http://www.epicollect.net/formHelp.asp#flags" target="_blank">Read-Only</a> <input name="readonly" type="checkbox"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Read-Only', 'The data in this field cannot be edited once it has been entered')">?</a></div>-->
+            <br><a href="http://www.epicollect.net/formHelp.asp#flags" target="_blank">Title</a> <input name="title" type="checkbox"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Title', 'If this option is selected then the field\'s value will appear as the name of the record in the record list and on the map.')">?</a></div>
+            <!--<br><a href="http://www.epicollect.net/formHelp.asp#flags" target="_blank">Subtitle</a> <input name="subtitle" type="checkbox"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Read-Only', 'The data in this field cannot be edited once it has been entered')">?</a></div>-->
+            <br><div id="numericFlag" style="display: inline;"><a href="http://www.epicollect.net/formHelp.asp#flags" target="_blank">Numeric</a> <input name="numeric" type="checkbox"></div><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Numeric', 'The data in this field will be restricted to integer or decimal numbers')">?</a></div>
+            <br><a href="http://www.epicollect.net/formHelp.asp#flags" target="_blank">Chartable</a> <input name="chart" type="checkbox"><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Chartable', 'The data in this field can be displayed in a chart. For text input fields this means the data must also be numeric.')">?</a></div>
+            <br><div id="chartType">(pie<input name="pie" disabled="true" type="radio"> bar<input name="bar" disabled="true" type="radio">)</div><div style="float:right; font-weight:bold;font-size:10pt;"><a href="javascript:void(0)" onclick="popup($(this).parent(),'Read-Only', 'Whether chartable data should be diplayed as a pie or bar chart.')">?</a></div>
+			<input name="done" value="Done" type="submit">
+            <input name="delete" value="Delete" type="submit">
+        </div>
+    </div> <!-- details-->
+</div> <!--columns-->
+<p>
+</p><div class="formOptions">
+    <!--Allow users to edit entries initially recorded on other users' devices? (<a href="http://www.epicollect.net/formHelp.asp#allowDownloadEdits" target="_blank">help</a>) --><input name="allowDownloadEdits" type="hidden">
+</div>
+<p>
+</p><div class="footers">
+&nbsp;
+    <div id="formSubmitButton" class="footer first"><input name="saveForm" value="Finished - Save Form!" type="submit"></input></div>
+    <div id="formName" class="footer second"><!--<b>Form Name</b>: -->&nbsp;<input name="formName" value="" size="10" length="64" type="hidden"></input></div>
+    <div id="formVersionNumber" class="footer last">
+        <b>Version Number</b>:
+        <select name="formVersion">
+            <option name="0.1">0.1</option>
+            <option name="1.0" selected="selected">1.0</option>
+        </select>
+    </div>
+</div>
+ 
+</td>
+      <td width="10%">&nbsp;</td></tr></tbody></table>
+    </div>
+ 
+
+   
+    </div> 
+    <div id="footer"></div>
+    <div id="foot"> 
+      <div align="center"><a href="http://www.imperial.ac.uk/" target="_blank">Hosted and Developed
+          at Imperial College London</a> | <a href="mailto:d.aanensen@imperial.ac.uk">Contact
+        us </a></div>
+    </div>
+</div>
+
+</body></html>

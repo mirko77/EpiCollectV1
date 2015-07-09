@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}EpiCollect Server - {{project.name}} Forms {% endblock %}
+
+{% block content %}
+    {% if error %} <P><b>{{error}}</b></P>{% endif %}
+    <P/>
+    <P>{{project.name}} has the following forms:
+    <UL>
+    {% for form in forms %}
+        <LI>{{form.name}} {{form.versionNumber}} <a href="/buildForm?formKey={{form.key}}">Edit</a> <a href="/getForm?name={{form.name}}&version={{form.versionNumber}}">XML</a>
+    {% endfor %}
+    </UL>
+    <P/>
+    <a href="/buildForm">Create New Form</a>
+{% endblock%}

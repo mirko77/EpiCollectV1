@@ -1,0 +1,719 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>EpiCollect - Data Visualization Map</title>
+    <link rel="stylesheet" type="text/css" href="/static/map/ext-all.css" />
+    <style type="text/css">
+        #timewindow { display:inline;}
+        #projectname { font-size:24pt; position:relative; top: 8px; }
+        #north{vertical-align:middle;}
+        #loading-mask {
+            position: absolute;
+            left:     0;
+            top:      0;
+            width:    100%;
+            height:   100%;
+            z-index:  20000;
+            background-color: white;
+        }
+
+        #loading {
+            position: absolute;
+            left:     50%;
+            top:      50%;
+            padding:  2px;
+            z-index:  20001;
+            height:   auto;
+            margin:   -35px 0 0 -30px;
+        }
+
+        #loading .loading-indicator {
+            background: url(http://www.epicollect.net/images/ajax-loader.gif) no-repeat;
+            color:      #555;
+            font:       bold 13px tahoma,arial,helvetica;
+            padding:    8px 42px;
+            margin:     0;
+            text-align: center;
+            height:     auto;
+        }
+    </style>
+    <script type="text/javascript" src="/static/map/ext-base.js"></script>
+    <script src="http://maps.google.com/maps?file=api&sensor=false&v=2&key=ABQIAAAAnN8trvwy54S4_TFoEaPJxxRLHyA8192-s5MA9mlGz0qchHKSqRRjF1vCWjb2z9SA9WWQwgEmXSUQgw" type="text/javascript"></script>
+    <script src="http://mapstraction.appspot.com/lib/prototype.js" type="text/javascript"></script>
+    <script src="http://mapstraction.appspot.com/lib/scriptaculous.js?load=slider" type="text/javascript"></script>
+    <script type="text/javascript" charset="utf-8" src="static/map/mxn.js?(google)"></script>
+    <script type="text/javascript" src="/static/map/ext-all.js"></script>
+    <script type="text/javascript"><!-- // originally in testextjs.js
+    var xmlDoc;
+    var xmlDocs = [];
+    var descs = [];
+    var allElements = [];
+    var mapstraction;//, mapstraction2;
+    var gmarkers = [];//, umarkers=[];
+    var w;
+    var side_bar_html = "";
+    var graphColours=["A7CC95","FF2626","00008B","008000","00BFFF","00DED1","00FA9A","191970","4169E1","4682B4","66CDAA","FFFFFF","800080","87CEFA","8B008B","8DBC8F","9370DB","98FB98","9932CC","A0522D","A9A9A9","ADD8E6","B22222","D8BFD8","EE82EE","F4A460","000000","FAF0E6","FAFAD2","FDF5E6","FF00FF","FF4500","FF69B4","FFB6C1","FFC8CB","FFD700","FFE4B5","FFEFD5","FFF0F5","FFFFE0","FFFFF0","00008B","008000","00BFFF","00DED1","00FA9A","191970","4169E1","4682B4","66CDAA","6A5ACD","800080","87CEFA","8B008B","8DBC8F","9370DB","98FB98","9932CC","A0522D","A9A9A9","ADD8E6","B22222","D8BFD8","EE82EE","F4A460","000000","FAF0E6","FAFAD2","FDF5E6","FF00FF","FF4500","FF69B4","FFB6C1","FFC8CB","FFD700","FFE4B5","FFEFD5","FFF0F5","FFFFE0","FFFFF0","00008B","008000","00BFFF","00DED1","00FA9A","191970","4169E1","4682B4","66CDAA","6A5ACD","800080","87CEFA","8B008B","8DBC8F","9370DB","98FB98","9932CC","A0522D","A9A9A9","ADD8E6","B22222","D8BFD8","EE82EE","F4A460","F5F5F5","FAF0E6","FAFAD2","FDF5E6","FF00FF","FF4500","FF69B4","FFB6C1","FFC8CB","FFD700","FFE4B5","FFEFD5","FFF0F5","FFFFE0","FFFFF0","A7CC95","FF2626","00008B","008000","00BFFF","00DED1","00FA9A","191970","4169E1"];
+
+    Ext.onReady(function() {
+        // NOTE: This is an example showing simple state management. During development,
+        // it is generally best to disable state management as dynamically-generated ids
+        // can change across page loads, leading to unpredictable results.  The developer
+        // should ensure that stable state ids are set for stateful components in real apps.
+
+        setTimeout(function(){
+
+            Ext.get('loading-mask').fadeOut({endOpacity:0.7});
+        }, 250);
+
+        Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+
+
+        var formHTML = 'Please choose a value -<br><br>';
+        {% for chartable in chartables %}
+            formHTML += '<b>{{chartable.label}}</b><br/><br/>';
+            formHTML += '<form id="{{chartable.name}}form" name="{{chartable.name}}form">';
+
+            formHTML += '<select name="a" id ="a">';
+            {% for option in chartable.options %}
+                formHTML +='<option value="{{option.value}}">{{option.label|escape}}</option>';
+                {% endfor %}
+                {% ifequal chartable.type "compare" %}
+                formHTML +='<option value="eq">equals</option>';
+                formHTML +='<option value="ge">>=</option>';
+                formHTML +='<option value="le"><=</option>';
+                formHTML +='<option value="bt">between</option>';
+                formHTML += '</select>';
+                formHTML +='<input name="b" size=5>';
+                {% else %}
+                formHTML += '</select>';
+                {% endifequal %}
+                formHTML += "<input type=\"button\" onclick=\"turnoff{{chartable.name}}();\" value=\"Submit\"></form>";
+                {% endfor %}
+                formHTML += '<br><a href=\"javascript:showAll();\">show all</a> ';
+
+                var viewport = new Ext.Viewport({
+                    layout:'border',
+                    items:[
+                        new Ext.BoxComponent({ // raw
+                            region:'north',
+                            el: 'north',
+                            height:75
+                        }),{
+                            region:'south',
+                            contentEl: 'south',
+                            split:true,
+                            height: 100,
+                            minSize: 100,
+                            maxSize: 200,
+                            collapsible: true,
+                            title:'Time Slider',
+                            margins:'0 0 0 0'
+                        }, {
+                            region:'east',
+                            title: 'Chart View',
+                            collapsible: true,
+                            split:true,
+                            width: 225,
+                            minSize: 175,
+                            maxSize: 400,
+                            layout:'fit',
+                            margins:'0 5 0 0',
+                            items: new Ext.Panel({
+                                html:'<div id=\"update_view\">You are currently viewing all data.</div><br><div id =\"graphs\"></div>',
+                                border:false,
+                                iconCls:'settings'
+                            })
+                        },{
+                            region:'west',
+                            id:'west-panel',
+                            title:'Navigation ',
+                            split:true,
+                            width: 200,
+                            minSize: 175,
+                            maxSize: 400,
+                            collapsible: true,
+                            margins:'0 0 0 5',
+                            layout:'accordion',
+                            layoutConfig:{ animate:true },
+                            items: [{
+                                contentEl: 'west',
+                                title:'Data points',
+                                border:false,
+                                iconCls:'nav',
+                                autoScroll:true
+                            },{
+                                title:'Data Filtering',
+                                html:formHTML,
+                                border:false,
+                                iconCls:'settings'
+                            },{
+                                title:'Chat Panel',
+                                html:'<iframe src="http://talkgadget.google.com/talkgadget/client" scrolling="no" frameborder="0" style="overflow:hidden; width: 100%; height: 250px;"></iframe>',
+                                border:false,
+                                iconCls:'settings'
+                            }]
+                        },
+                        new Ext.TabPanel({
+                            deferredRender:false,
+                            activeTab:0,
+                            xtype: 'gmappanel',
+                            region: 'center',
+                            items:[{
+                                contentEl:'mapstraction',
+                                title: 'Map Panel',
+                                closable:false,
+                                autoScroll:true
+                            },
+                                //{
+                                //   contentEl:'center3',
+                                //  title: 'Project Panel',
+                                // autoScroll:true
+                                //},
+                                {
+                                    contentEl:'center2',
+                                    title: 'Google Earth',
+                                    autoScroll:true
+                                }]
+                        })
+                    ]
+                });
+
+                mapstraction = new mxn.Mapstraction('mapstraction', 'google');
+                mapstraction.setMapType(mxn.Mapstraction.Normal);
+                mapstraction.addControls({
+                    pan: true,
+                    zoom: 'large',
+                    map_type: true
+                });
+
+                mapstraction.setCenterAndZoom(new mxn.LatLonPoint(0,0),1);
+                addMarkers(40,0); // we center and zoom there, too
+            });
+            //TODO: bar chart for compares?
+            function getGraphs(targetField, targetValue, comparator, valuePrefix) {
+
+                var chartableFields = [];
+                var chartableLabels = []
+                var chartableGraphTypes = []
+                var chartableOptions=[];
+                {% for chartable in chartables %}
+                    chartableFields.push('f_{{chartable.name}}');
+                    chartableLabels.push('{{chartable.label}}');
+                    chartableGraphTypes.push('{{chartable.graphType}}');
+                    var tempArray=[];
+                    {% for option in chartable.options %}
+                        tempArray[{{forloop.counter0}}]='{{option.value}}';
+                    {% endfor %}
+                    chartableOptions[{{forloop.counter0}}]=tempArray;
+                {% endfor %}
+
+                var graphHTML='';
+                if (targetValue!='all') {
+                    var label = targetField;
+                    var graphType = 'p';
+                    for (var i=0; i<chartableFields.length; i++) {
+                        if (chartableFields[i]==targetField) {
+                            label = chartableLabels[i];
+                            graphType=chartableGraphTypes[i];
+                        }
+                    }
+                    graphHTML='<P><b>'+label+'</b><BR/>'+getTargetFieldGraph(targetValue, graphType, valuePrefix)+'</P>';
+                }
+
+                for (var i=0; i<chartableFields.length; i++) {
+                    if (chartableFields[i]!=targetField)
+                        graphHTML+='<P><b>'+chartableLabels[i]+'</b><BR/>'+getGraph(chartableFields[i], chartableOptions[i], chartableGraphTypes[i], valuePrefix)+'</P>';
+                }
+                //alert("graphHTML is "+graphHTML);
+                return graphHTML;
+            }
+
+            //don't need to calculate it, it's always the same
+            function getTargetFieldGraph(targetValue, graphType, valuePrefix) {
+                var markers=mapstraction.markers;
+                var hits=0;
+                for (var k=0; k<markers.length; k++) {
+                    if (markers[k].getAttribute('visible'))
+                        hits++;
+                }
+                hits = parseInt(100*hits/markers.length)
+                chartHTML='<img src="http://chart.apis.google.com/chart?';
+                chartHTML+='cht=';
+                chartHTML+=(graphType=='pie' ? 'p' : 'bhs');
+                chartHTML+='&chs=';
+                chartHTML+=(graphType=='pie' ? '175x100' : '200x150');
+                chartHTML+='&chf=bg,s,ffffff&chbh=10&chxt=x,y';
+                chartHTML+='&chd=t:'+hits+','+(100-hits)+(graphType=='pie'?'&chl=':'&chxl=-1:|')+escape(valuePrefix+targetValue)+'|Other';
+                chartHTML+='&chco=ff0000,00ff00" alt="Google Chart">';
+                return chartHTML;
+            }
+
+            function getGraph(fieldToGraph, fieldOptions, graphType,valuePrefix) {
+                var markers=mapstraction.markers;
+
+
+                //alert(allElements.length);
+                var totalHits=0;
+                var htmlNames='';
+                var htmlPercentages='';
+                var htmlColours='';
+
+                if (fieldOptions.length==0) // numeric text-input field; do a chart of all the options
+                {
+                    //first, bucket-sort the various options. Horrendously inefficient, but JS doesn't have a dictionary object
+                    var buckets = [];
+                    for (var j=0; j<markers.length; j++) {
+                        if (markers[j].getAttribute('visible')) {
+                            totalHits++;
+                            id = markers[j].getAttribute('id');
+                            value = getNodeValue(allElements[id], fieldToGraph);
+                            var found = false;
+                            for (var k=0; k<buckets.length; k++) {
+                                if (buckets[k][0]==value) {
+                                    buckets[k][1]=buckets[k][1]+1;
+                                    found = true
+                                }
+                            }
+                            if (!found)
+                                buckets.push(new Array(value,1));
+                        }
+                    }
+                    var minval = Number.MAX_VALUE;
+                    var lastval = Number.MAX_VALUE * -1;
+                    for(var m=0; m<buckets.length; m++){
+                        minval = Number.MAX_VALUE;
+                        for (var l=0; l<buckets.length; l++) {
+                            if(buckets[l][0] < minval && buckets[l][0] > lastval){
+                                minval = buckets[l][0];
+                                minidx = l;
+                            }
+                        }
+                        if(minval != Number.MAX_VALUE){
+                            // alert(minval + " " + minidx);
+                            lastval = minval;
+                            //now, set the percentages, names and colours
+                            value = buckets[minidx][0];
+                            htmlPercentages+=parseInt(100*buckets[minidx][1]/totalHits)+',';
+                            htmlNames+=valuePrefix+'|'+value;
+                            htmlColours+=graphColours[minidx%(graphColours.length-1)]+',';
+                        }
+                    }
+                }
+                else // select field with fixed options; do a pie or bar chart
+                {
+                    for (var j=0; j<fieldOptions.length; j++) {
+                        totalHits=0;
+                        var hitsForThisOption=0;
+                        for (var k=0; k<markers.length; k++) {
+                            if (markers[k].getAttribute('visible')) {
+                                totalHits++;
+                                id = markers[k].getAttribute('id');
+                                var entryValue = getNodeValue(allElements[id],fieldToGraph);
+                                var optionValue = fieldOptions[j];
+                                if (entryValue == optionValue)
+                                    hitsForThisOption++;
+                                else if (entryValue.indexOf(optionValue)>=0)
+                                    hitsForThisOption++;
+                            }
+                        }
+                        htmlPercentages+=parseInt(100*hitsForThisOption/totalHits)+',';
+                        htmlNames+='|'+fieldOptions[j];
+                        htmlColours+=graphColours[j%(graphColours.length-1)]+',';
+                    }
+                }
+
+                //strip trailing commas
+                htmlPercentages = htmlPercentages.substr(0, htmlPercentages.length-1);
+                htmlNames = htmlNames.substr(1, htmlNames.length-1);
+                htmlColours = htmlColours.substr(0, htmlColours.length-1);
+
+                //we've got percentages, names, and colours; now, generate a chart
+                chartHTML='<img src="http://chart.apis.google.com/chart?';
+                chartHTML+='cht=';
+                chartHTML+=(graphType=='pie' ? 'p' : 'bhs');
+                chartHTML+='&chs=';
+                chartHTML+=(graphType=='pie' ? '200x180' : '200x150');
+                chartHTML+='&chf=bg,s,ffffff&chbh=10&chxt=x,y';
+                chartHTML+='&chd=t:'+htmlPercentages;
+                chartHTML+=(graphType=='pie'?'&chma=45,45,45,45&chl=':'&chxl=-1:|')+htmlNames;
+                chartHTML+='&chco='+htmlColours;
+                chartHTML+='" alt="Google Chart">';
+                return chartHTML;
+            }
+
+            function trim(str) {
+                str.replace(/^\s*/, '').replace(/\s*$/, '');
+                return str;
+            }
+
+            function getNodeValue(element, name) {
+                if(!element)
+                {
+                    //alert(name);
+                    return '';
+                }
+                elements = element.getElementsByTagName(name);
+                if (elements.length>0 && elements[0].childNodes.length>0)
+                    return trim(elements[0].childNodes[0].nodeValue);
+                else
+                    return '';
+            }
+
+            function turnoff(group) {
+                removeAllFilters();
+                addFilter('group', 'ge', group );
+                addFilter('group', 'le', group );
+                doFilter();
+            }
+
+            {% for chartable in chartables %}
+                function turnoff{{chartable.name}}() {
+                try{
+                    removeAllFilters();
+
+                    {% ifequal chartable.type "compare" %}
+                    //get values from dropdown
+                    var comparator = {{chartable.name}}form.elements["a"].options[{{chartable.name}}form.elements["a"].selectedIndex].value;
+                var value = {{chartable.name}}form.elements["b"].value;
+            //apply filter
+            valuePrefix=''
+            comparatorStringSuffix=''
+            if (comparator=='bt') {
+                values=value.split(",");
+                addFilter('f_{{chartable.name}}', 'ge', trim(values[0]));
+                addFilter('f_{{chartable.name}}', 'le', trim(values[1]));
+                comparatorString = 'between'
+                comparatorStringSuffix=' (inclusive)'
+                valuePrefix='between '
+            }
+            else if (comparator=='eq') {
+                addFilter('f_{{chartable.name}}', 'ge', value);
+                addFilter('f_{{chartable.name}}', 'le', value);
+                comparatorString = 'equal to'
+                valuePrefix=''
+            }
+            else if (comparator=='ge') {
+                addFilter('f_{{chartable.name}}', comparator, value);
+                comparatorString = 'greater than or equal to'
+                valuePrefix='>='
+            }
+            else if (comparator=='le') {
+                addFilter('f_{{chartable.name}}', comparator, value);
+                comparatorString = 'less than or equal to'
+                valuePrefix='<='
+            }
+            doFilter();
+
+            html = 'You are viewing entries with <i>{{chartable.label}}</i> '+comparatorString+' '+value+comparatorStringSuffix
+            html+= getGraphs('f_{{chartable.name}}', value, comparator, valuePrefix);
+            Element.update('update_view', html);
+            {% else %}
+            //get values from dropdown
+            var valuea = {{chartable.name}}form.elements["a"].options[{{chartable.name}}form.elements["a"].selectedIndex].value;
+    //apply filter
+
+    addFilter('f_{{chartable.name}}', 'ge', valuea);
+    addFilter('f_{{chartable.name}}', 'le', valuea);
+    doFilter();
+    //alert('{{chartable.type}}');
+    html = 'You are viewing entries filtered by <i>{{chartable.label}}</i>, with the value '+valuea;
+    html+= getGraphs('F_{{chartable.name}}', valuea, 'eq', '')
+    Element.update('update_view', html);
+    {% endifequal %}
+    }catch(err){alert(err);}
+    }
+    {% endfor %}
+
+
+    function showAll(){
+        removeAllFilters();
+        doFilter();
+        viewElement = document.getElementById("update_view");
+        if (viewElement)
+            Element.update(viewElement,'You are currently viewing all data'+getGraphs('all','all','all', ''));
+    }
+
+    function myclick(i) {
+        if(w) w.close();
+        gmarkers[i].openBubble();
+        //umarkers[i].openBubble();
+    }
+
+
+    function sliderChanged(offsets) {
+        var min = slider.timeMin + (offsets[0] / 1000) * (slider.timeMax - slider.timeMin);
+        var minDate = new Date(min);
+        var max = slider.timeMin + (offsets[1] / 1000) * (slider.timeMax - slider.timeMin);
+        var maxDate = new Date(max);
+
+
+        var tw = document.getElementById("timeWindow");
+        Element.update(tw, minDate + " -> " + maxDate);
+
+        removeAllFilters();
+        addFilter('date', 'ge', minDate );
+        addFilter('date', 'le', maxDate );
+        doFilter();
+    }
+
+    function addSlider() {
+
+        slidervalues = [0,1000];
+        sliderhandles = [$('handle1'), $('handle2')];
+        slider = new Control.Slider(sliderhandles, 'track', {
+            range:$R(0, 1000, false),
+            step:1,
+            restricted:true,
+            sliderValue: slidervalues,
+            onChange: sliderChanged,
+            onSlide: sliderChanged
+        });
+
+        //var allElements = xmlDoc.documentElement.getElementsByTagName("Record");
+        var timeMin=new Date().getTime();
+        var timeMax=0;
+        for (var i = 0; i < allElements.length; i++) {
+            var timeCreated = parseFloat(getNodeValue(allElements[i],"timeMillis"));
+            timeMin = (timeCreated<timeMin) ? timeCreated : timeMin;
+            timeMax = (timeCreated>timeMax) ? timeCreated : timeMax;
+            //alert("time "+i+": "+timeCreated+" min: "+timeMin+" max: "+timeMax);
+        }
+
+        slider.timeMin = parseInt(timeMin);
+        slider.timeMax = parseInt(timeMax);
+    }
+
+
+    function addMarkers(number, offset) {
+        //mapstraction.removeAllMarkers();
+        try{
+            var xmlURL = "/getMapXML?projectKey={{project.key}}&number=" + number + "&offset=" + offset;
+            if (window.location.search.indexOf("doTest=true")>0)
+                xmlURL+= "&doTest=true";
+
+            GDownloadUrl(xmlURL, function(doc) {
+
+                xmlDoc = GXml.parse(doc);
+                xmlDocs.push(xmlDoc);
+
+                var markers = xmlDoc.documentElement.getElementsByTagName("Record");
+                var userEmails=new Array();
+                var iconColours=new Array('yellow','purple','pink','white','black','blue','green','red');
+
+                for (var i = 0; i < markers.length; i++) {
+                    allElements.push(markers[i]);
+                    var lat1 = parseFloat(getNodeValue(markers[i],"latitude"));
+                    var lng1 = parseFloat(getNodeValue(markers[i],"longitude"));
+
+
+
+                    {% for field in fields %}
+                        var f_{{field}} = getNodeValue(markers[i],"f_{{field}}");
+                        f_{{field}} = trim(f_{{field}});
+                        {% endfor %}
+                        label = ''+f_{{title}}; // +' | '+{{subtitle}};
+
+
+                        var html='<img src="static/no_image.png" alt="No image uploaded" width="200" height = "159" /><br/><br/>';
+                        var imagePath = getNodeValue(markers[i],"ecPhotoPath");
+                        if (imagePath.length>0)
+                            html = '<a href="'+imagePath+'" target="__blank"><img src="'+imagePath+'" width="200" height = "200" /></a><br/><br/>';
+
+                        {% for field in fields %}
+                            html+='<b>{{field}}</b> '+ f_{{field}} + '<br/>';
+                            {% endfor %}
+
+                            if(lat1 == 0 && lng1 == 0) {
+                                descs.push(html);
+                                side_bar_html += '<a href="javascript:showDesc(' + (descs.length - 1) + ');">' +  label + ' (No position data)</a><br />';
+                                continue;
+                            }
+                            else
+                            {
+                                side_bar_html += '<a href="javascript:myclick(' + (gmarkers.length) + ')" onmouseover="gmarkers['+i+'].setIcon(\'marker.png\')";">' + label + '<\/a><br />';
+                            }
+
+                            var ll = new mxn.LatLonPoint(lat1,lng1);
+                            var marker = new mxn.Marker(ll);
+
+                            var time = getNodeValue(markers[i],"timeMillis");
+                            var d = new Date().setTime(time);
+
+                            marker.setAttribute( 'id', gmarkers.length );
+                            marker.setAttribute( 'date',  d);
+                            marker.setInfoBubble(html);
+
+
+                            {% for chartable in chartables %}
+                                marker.setAttribute( 'f_{{chartable.name}}', f_{{chartable.name}} );
+                                {% endfor %}
+
+                                marker.setIcon('images/markers/redCircle.png',[12,20],[6, 20]);
+                                {% for option in markerField.options %}
+                                    if (f_{{markerField.name}}=='{{option.value}}')
+                                    { marker.setIcon('images/markers/{% cycle red,green,navy,white,pink,purple,yellow,grey,mint,black %}Circle.png',[12,20],[6, 20] ); }
+                                    {% endfor %}
+
+                                    //marker.setShadowIcon('images/markers/shadow.png', [22, 20]);
+
+                                    gmarkers.push(marker);
+                                    mapstraction.addMarker( marker );
+
+
+                                }
+
+                                Element.update("side_bar",side_bar_html);
+
+
+                                if(markers.length == number)
+                                {
+                                    addMarkers(number, offset + number);
+                                }
+                                else
+                                {
+                                    //OK, we've added all the markers, let's configure the map
+                                    mapstraction.autoCenterAndZoom()
+                                    //if (mapstraction.getZoom()>6)
+                                    //   mapstraction.setZoom(mapstraction.getZoom()-2);
+                                    //mapstraction2.setCenterAndZoom(mapstraction.getCenter(), mapstraction.getZoom());
+                                    showAll();
+                                    addSlider();
+                                    sliderChanged(slidervalues);
+
+                                    Ext.get('loading-mask').fadeOut({remove:true});
+                                    Ext.get('loading').remove();
+                                    //Ext.MessageBox.alert("Load Complete");
+                                }
+
+                            });
+                        }catch(err){alert(err);}
+                    }
+
+                    function showDesc(i)
+                    {
+                        if(w) w.close();
+                        mapstraction.maps['google'].closeInfoWindow();
+                        w = new Ext.Window({
+                            width: 215,
+                            title: 'Entry without position',
+                            html:descs[i],
+                            layout:{
+                                type: 'hbox',
+                                defaultMargins : {
+                                    top : 5,
+                                    left : 5,
+                                    bottom : 5,
+                                    right : 5
+                                },
+                                align:'center'
+                            }
+                        });
+                        w.show();
+                    }
+
+                    function removeAllFilters() {
+                        // mapstraction2.removeAllFilters();
+                        mapstraction.removeAllFilters();
+                    }
+
+                    function addFilter(s1,s2,s3) {
+                        // mapstraction2.addFilter(s1,s2,s3);
+                        mapstraction.addFilter(s1,s2,s3);
+
+                    }
+
+                    function doFilter() {
+                        // mapstraction2.doFilter();
+                        mapstraction.doFilter();
+                    }
+    --></script>
+    <style type="text/css">
+        html, body { font:normal 12px verdana; }
+        p {  margin:5px; }
+        .settings { background-image:url(/static/map/folder_wrench.png); }
+        .nav { background-image:url(/static/map/folder_go.png); }
+    </style>
+
+    <style type="text/css">
+        /* put the left rounded edge on the track */
+        #track-left {
+            position: absolute;
+            width: 5px;
+            height: 9px;
+            background: transparent url(http://mapstraction.appspot.com/images/slider-images-track-left.png) no-repeat top left;
+        }
+        /* put the track and the right rounded edge on the track */
+        #track {
+            background: transparent url(http://mapstraction.appspot.com/images/slider-images-track-right.png) no-repeat top right;
+        }
+    </style>
+</head>
+
+<body>
+<div id="loading-mask"></div>
+<div id="loading">
+    <div class="loading-indicator">
+        Loading...
+    </div>
+</div>
+<div id="south">
+    <div id="track" style="width:200px; height:9px; margin:20px;">
+        <div id="track-left"></div>
+        <div id="handle1" style="width:19px; height:20px;"><img src="http://mapstraction.appspot.com/images/slider-images-handle.png" alt="" style="float: left;" /></div>
+        <div id="handle2" style="width:19px; height:20px;top:-20px;"><img src="http://mapstraction.appspot.com/images/slider-images-handle.png" alt="" style="float:left" /></div>
+    </div>
+    <span id="timeWindow" style="padding:15px 0 0 15px; font-size: 10pt; width: 100%;margin-top:-60px;">&nbsp;</span>
+</div>
+
+<div id="west">
+    <div id="side_bar"></div>
+</div>
+<div id="north">
+    <p>
+        <a href="http://www.epicollect.net"><img src="http://www.epicollect.net/images/logo_new_transparent.png" alt="EC_logo" style="float:left"/></a>
+	        	<span id="projectname">
+	        		<a href="http://www.epicollect.net/project.html?name={{project.name}}" target="_top"> {{project.name}}</a>
+	        	</span>
+        <a href="http://www.epicollect.net/project.html?name={{project.name}}" target="_top">
+            <img src="http://www.epicollect.net/images/home_sm.png" alt="project Home" style="vertical-align:top" />
+        </a>
+    </p>
+</div>
+
+
+<div id="center2">
+    <div align="center">
+        <table width="60%" border="0" align="center">
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    <div align="center">
+                        <p><a href="getMapKML?projectKey={{project.key}}" target="_blank">Click here (or the icon) to view data in Google Earth </a></p>
+                        <p><a href="getMapKML?projectKey={{project.key}}" target="_blank"><img src="http://www.mlst.net/earth/open_in_ge.png" alt="ge_logo" width="16" height="16" border="0" /></a></p>
+                        <p>&nbsp;Or</p>
+                        <p><a href="getKmlFeed?projectKey={{project.key}}" target="_blank">Access the KML Feed</a></p>
+                    </div></td>
+            </tr>
+            <tr>
+                <td><div align="center">
+                    <p>&nbsp;</p>
+                </div></td>
+            </tr>
+            <tr>
+                <td><p align="center">To view the data you need to have Google Earth installed on your computer. To download click the following image:</p>
+                    <p align="center"><a href="http://earth.google.com" target="_blank"><img src="http://www.epicollect.net/images/earth_logo.gif" alt="ge_logo" width="164" height="40" border="0" /></a> </p>
+                    <p align="center">&nbsp;</p></td>
+            </tr>
+            <tr>
+                <td><div align="center">If the file does not automatically open with Google Earth, save the link to your computer and then open.</div></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div id="mapstraction" style="width: 100%; height: 100%" ></div>
+<div id="props-panel" style="width:200px;height:200px;overflow:hidden;"></div>
+</body>
+</html>

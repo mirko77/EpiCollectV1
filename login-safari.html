@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <title>EpiCollect Server - Login</title>
+    <script type="text/javascript" src="/static/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-ui-1.7.2.min.js"></script>
+    <script>
+        function getRequestParameter ( parameterName ) {
+            var queryString = window.location.search.substring(1);
+            var parameterName = parameterName + "=";
+            if ( queryString.length > 0 ) {
+                begin = queryString.indexOf ( parameterName );
+                if ( begin != -1 ) {
+                    begin += parameterName.length;
+                    end = queryString.indexOf ( "&" , begin );
+                    if ( end == -1 ) {
+                        end = queryString.length
+                    }
+                    return unescape ( queryString.substring ( begin, end ) );
+                }
+            }
+            return "";
+        }
+        
+         function init(){
+            var firstTime=getRequestParameter("firstTime");
+            if (firstTime!="true") {
+                alert("Infinite redirection detected, bailing out.");
+                window.location="/";
+            }
+            else {
+                var projectKey = getRequestParameter("projectKey");
+                var projectName = getRequestParameter("projectName");
+                var timeMillis = new Date().getTime();
+                var ticket = ""+timeMillis+timeMillis*Math.random();
+                
+                var height = document.documentElement.clientHeight;
+                height -= document.getElementById('frame').offsetTop;
+                document.getElementById('frame').style.height = height +"px";    
+                window.frames[0].location="/ecLogin?destination="+ getRequestParameter("destination")+"&ticket="+ticket+"&projectKey="+projectKey+"&projectName="+projectName;
+            }
+        };
+    </script>    
+</head>
+
+<body style="overflow:hidden;margin:0px;" onload="init()">
+<div id="myframe" style="width:100%;height:100%;border:0px;"><iframe id="frame" style="width:100%;height:100%;border:0px;overflow:auto;" src=""></iframe></div>
+</body>
+</html>

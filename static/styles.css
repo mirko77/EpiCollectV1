@@ -1,0 +1,93 @@
+body { margin:0;padding:0;text-align:center;font-family:Arial, Helvetica, "sans-serif";color:#7f8793;font-size:12px; }
+img { border:0; }
+p { color:#7f8793;margin:10px 0 0 0;line-height:16px; }
+p.quote { font-size:11px;margin:0 0 15px 0;line-height:16px;width:195px; }
+a { color:#aeb6c3;text-decoration:none;cursor:pointer;cursor:hand; }
+a:hover { color:#44536b;text-decoration:underline; }
+a.red { color:#f14633; }
+a.red:hover { color:#f14633; }
+a.blue { color:#358bd4;font-size:14px;display:block; }
+a.blue:hover { color:#358bd4; }
+h1 { color:#44536b;font-size:16px;margin:0 0 5px 0;padding:0 0 13px 0;border-bottom:1px solid #e5e9ef;font-weight:normal; }
+/*h1 span { display:block;color:#9ca5b3;font-size:14px;margin:6px 0 0 0; }*/
+h2 { font-size:14px;color:#44536b;font-weight:normal; }
+strong { color:#44536b;font-weight:normal; }
+em { color:#80c5ff;font-size:18px; }
+
+td { vertical-align:top; }
+ul { padding:0 0 0 15px; }
+li { color:#44536b;margin:0 0 10px 0; }
+
+#container { width:1000px;margin:37px auto;text-align:left; }
+
+#nav { display:inline; vertical-align:4px; }
+    #nav a { padding:0 0 0 19px; }
+
+#mainbox { width:998px;border:1px solid #dce0e6;padding:30px 0 39px 35px; }
+    #mainbox #leftcolumn { width:190px;padding:0 0 0 0; }
+        #mainbox #leftcolumn .casestudiestable { width:190px;margin:0 0 35px 0; }
+        #mainbox #leftcolumn .casestudiestable td { border-bottom:1px solid #e5e9ef;padding:14px 0 13px 0; }
+        #mainbox #leftcolumn .newstable { width:195px; }
+        #mainbox #leftcolumn .newstable td { border-bottom:1px solid #e5e9ef;padding:25px 0 25px 0;vertical-align:middle; }
+    
+    #mainbox #centercolumn { width:480px;padding:0 0 0 35px; }
+        #mainbox #centercolumn .casestudiestable { width:480px; }
+        #mainbox #centercolumn .casestudiestable td { border-bottom:1px solid #e5e9ef;padding:11px 0 10px 0;vertical-align:middle; }
+        #mainbox #centercolumn .newstable { width:480px; }
+        #mainbox #centercolumn .newstable td { border-bottom:1px solid #e5e9ef;padding:25px 0 25px 0;vertical-align:middle; }
+        #mainbox #centercolumn .note { background:#fcfcfc;border:1px solid #dee2e8;padding:10px 20px 20px 20px;margin:10px 0 0 0; }
+        #mainbox #centercolumn .note strong { text-decoration:underline; }
+		
+		
+		   #mainbox #centercolumnfull { width:700px;padding:0 0 0 35px; }
+		   #mainbox #centercolumntopics { width:925px;padding:0 0 0 35px; }
+       
+        
+    
+    #mainbox #rightcolumn { width:190px;padding:0 0 0 33px; }
+        #mainbox #rightcolumn .casestudiestable { width:190px;margin:0 0 35px 0; }
+        #mainbox #rightcolumn .casestudiestable td { border-bottom:1px solid #e5e9ef;padding:14px 0 13px 0; }
+        
+        
+#footer { width:985px;background-color: #dce0e6;padding:5px 20px 18px 30px;text-align:right; }
+    #footer #bleepnews { height:25px;background-color: #ffffff;width:500px;padding:0 6px 0 0;color:#44536a;float:left;text-align:left; }
+    #footer #bleepnews img { vertical-align:middle; }
+    #footer #bleepnews #tickertape { color:#44536a;padding:0 0 0 0;margin:6px 0 0 0;width:350px;height:18px;float:left; }
+    #footer #bleepnews #tickertape a { display:block; }
+    #footer #bleepnews a#bleepnewslink { display:block;width:142px;height:25px;float:left; }
+    #footer #bleepnews a#bleepnewslink span { display:none; }
+    #footer #bleepnews a#bleepnewslink:hover { background-position:0 -25px; }
+    
+#foot { text-align:right;width:1000px;margin:15px 0 0 0;color:#aeb6c3;font-size:11px; }
+    #foot a { color:#aeb6c3;font-size:11px;text-decoration:none; }
+    #foot a:hover { color:#44536b;text-decoration:underline; }
+    
+ 
+#map { background:#f5f7f9;border:1px solid #dce0e6;margin:60px 0 0 0; }
+    #map img { margin:10px; }
+    #map hr { border:0;border-bottom:1px solid #dce0e6;margin:0; }
+    #map a.red { display:block;margin:10px; }
+	
+#right_column { background:#f5f7f9;border:1px solid #dce0e6;margin:30px 0 0 0;width:200px; }
+   
+    #right_column hr { border:0;border-bottom:1px solid #dce0e6;margin:0; }
+    #right_column a{ margin:10px; }	
+	
+	
+	
+.form { width:480px; }
+.form td { padding:0 0 13px 0; }
+.form td em { margin:3px 0 0 0;display:block; }
+.form .label { width:180px;text-align:right;padding:3px 10px 0 0; }
+.form input[type=text], .form textarea { width:100%;border:1px solid #dce0e6;margin:0 0 0 5px; }
+.form select { border:1px solid #dce0e6;margin:0 0 0 5px; }
+
+.projectTitle { font-size:24pt;color:#000000; margin:-50px 0 20px -150px; vertical-align:bottom;}
+
+.ButtonSeeAllArticles { display:block; width:117px;height:33px; }
+.ButtonSeeAllArticles:hover { background-position:0 -33px;background-repeat:no-repeat; }
+.ButtonSeeAllArticles span { display:none; }
+
+.ButtonSubmitForm { display:block; width:115px;height:32px; }
+.ButtonSubmitForm:hover { background-position:0 -32px;background-repeat:no-repeat; }
+.ButtonSubmitForm span { display:none; }
